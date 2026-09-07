@@ -319,7 +319,7 @@ nav.primary-nav a:hover::after{ transform: scaleX(1); transform-origin: left; }
 ===================================================================== */
 .lookbook{
   position: relative;
-  min-height: 62vh;
+  min-height: 65vh;
   display:flex; align-items:center;
   overflow:hidden;
   color:#fff;
@@ -355,9 +355,9 @@ nav.primary-nav a:hover::after{ transform: scaleX(1); transform-origin: left; }
 .value-item h3{ font-size:18px; margin-bottom:8px; }
 .value-item p{ color: var(--muted); font-size:14.5px; max-width: 34ch; }
 
-/* =====================================================================
-   GALLERY STRIP
-===================================================================== */
+/* /* =====================================================================
+   GALLERY STRI[
+===================================================================== 
 .gallery-strip{
   display:grid; grid-template-columns: repeat(5,1fr); gap:14px;
 }
@@ -373,7 +373,7 @@ nav.primary-nav a:hover::after{ transform: scaleX(1); transform-origin: left; }
   content:""; position:absolute; inset:0; background: rgba(24,20,15,.25);
   opacity:0; transition:opacity .2s ease;
 }
-.gallery-strip a:hover::before{ opacity:1; }
+.gallery-strip a:hover::before{ opacity:1; } */
 
 /* =====================================================================
    NEWSLETTER
