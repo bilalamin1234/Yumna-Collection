@@ -176,15 +176,149 @@
   });
 
   document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && searchOverlay.classList.contains('is-open')) closeSearch();
+    if(e.key === 'Escape'){
+      if(searchOverlay.classList.contains('is-open')) closeSearch();
+      if(cartDrawer.classList.contains('is-open')) closeCart();
+    }
   });
 
+  /* =====================================================================
+     CART DRAWER
+     Front-end-only cart: items live in localStorage under "yc_cart" so
+     they survive a page reload on the same browser. There is no server
+     and no payment processing — the "Checkout" button below is a stub;
+     wire it to your real checkout (Stripe Checkout, a WhatsApp order-
+     message link built from `cart`, your own backend, etc.) when ready.
+  ===================================================================== */
+  var CART_KEY = 'yc_cart';
+  var cartDrawer      = document.getElementById('cartDrawer');
+  var cartScrim       = document.getElementById('cartScrim');
+  var cartOpenBtn     = document.getElementById('cartOpen');
+  var cartCloseBtn    = document.getElementById('cartClose');
+  var cartItemsEl     = document.getElementById('cartItems');
+  var cartEmptyEl     = document.getElementById('cartEmpty');
+  var cartFooterEl    = document.getElementById('cartFooter');
+  var cartSubtotalEl  = document.getElementById('cartSubtotal');
+  var bagCountEl      = document.getElementById('bagCount');
+  var cartCheckoutBtn = document.getElementById('cartCheckout');
+
+  function loadCart(){
+    try{
+      var raw = localStorage.getItem(CART_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){
+      return [];
+    }
+  }
+  function saveCart(){
+    try{ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }catch(e){ /* storage unavailable — cart just won't persist */ }
+  }
+
+  var cart = loadCart();
+
+  function openCart(){
+    cartDrawer.classList.add('is-open');
+    cartScrim.classList.add('is-visible');
+    cartOpenBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCart(){
+    cartDrawer.classList.remove('is-open');
+    cartScrim.classList.remove('is-visible');
+    cartOpenBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  function addToCart(product){
+    var existing = cart.filter(function(item){ return item.id === product.id; })[0];
+    if(existing){
+      existing.qty += 1;
+    }else{
+      cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, qty: 1 });
+    }
+    saveCart();
+    renderCart();
+    openCart();
+  }
+  function changeQty(id, delta){
+    var item = cart.filter(function(i){ return i.id === id; })[0];
+    if(!item) return;
+    item.qty += delta;
+    if(item.qty <= 0){
+      cart = cart.filter(function(i){ return i.id !== id; });
+    }
+    saveCart();
+    renderCart();
+  }
+  function removeItem(id){
+    cart = cart.filter(function(i){ return i.id !== id; });
+    saveCart();
+    renderCart();
+  }
+
+  function renderCart(){
+    cartItemsEl.innerHTML = '';
+    var totalQty = cart.reduce(function(sum, i){ return sum + i.qty; }, 0);
+    var subtotal = cart.reduce(function(sum, i){ return sum + (i.qty * i.price); }, 0);
+
+    var hasItems = cart.length > 0;
+    cartEmptyEl.style.display = hasItems ? 'none' : 'flex';
+    cartFooterEl.style.display = hasItems ? 'block' : 'none';
+    cartItemsEl.style.display = hasItems ? 'flex' : 'none';
+
+    cart.forEach(function(item){
+      var line = document.createElement('div');
+      line.className = 'cart-line';
+      line.innerHTML =
+        '<img src="' + item.image + '" alt="">' +
+        '<div class="cart-line-info">' +
+          '<h4>' + item.name + '</h4>' +
+          '<span class="cart-line-price">\u20B9' + item.price + '</span>' +
+          '<div class="cart-line-controls">' +
+            '<div class="qty-stepper">' +
+              '<button type="button" data-action="dec" aria-label="Decrease quantity">\u2212</button>' +
+              '<span>' + item.qty + '</span>' +
+              '<button type="button" data-action="inc" aria-label="Increase quantity">+</button>' +
+            '</div>' +
+            '<button type="button" class="cart-line-remove">Remove</button>' +
+          '</div>' +
+        '</div>';
+      line.querySelector('[data-action="dec"]').addEventListener('click', function(){ changeQty(item.id, -1); });
+      line.querySelector('[data-action="inc"]').addEventListener('click', function(){ changeQty(item.id, 1); });
+      line.querySelector('.cart-line-remove').addEventListener('click', function(){ removeItem(item.id); });
+      cartItemsEl.appendChild(line);
+    });
+
+    cartSubtotalEl.textContent = '\u20B9' + subtotal;
+    bagCountEl.textContent = totalQty;
+    bagCountEl.hidden = totalQty === 0;
+  }
+
+  cartOpenBtn.addEventListener('click', openCart);
+  cartCloseBtn.addEventListener('click', closeCart);
+  cartScrim.addEventListener('click', closeCart);
+
+  document.querySelectorAll('.product-quickadd').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var card = btn.closest('.product-card');
+      if(!card) return;
+      addToCart({
+        id: card.getAttribute('data-id'),
+        name: card.getAttribute('data-name'),
+        price: parseFloat(card.getAttribute('data-price')) || 0,
+        image: card.getAttribute('data-image')
+      });
+    });
+  });
+
+  cartCheckoutBtn.addEventListener('click', function(){
+    // Stub — replace with your real checkout flow.
+    window.alert('Checkout isn\'t connected yet. This button is where your payment or order flow goes.');
+  });
+
+  renderCart();
+
 })();
-
-
-
-
-
 
 
 
@@ -192,86 +326,74 @@
 (function(){
   "use strict";
 
-  var tabSignIn = document.getElementById('tabSignIn');
-  var tabSignUp = document.getElementById('tabSignUp');
-  var signInForm = document.getElementById('signInForm');
-  var signUpForm = document.getElementById('signUpForm');
-  var authFoot = document.getElementById('authFoot');
-  var switchToSignUp = document.getElementById('switchToSignUp');
+  /* =====================================================================
+     CATEGORY FILTERING (category.html only)
+     Reads ?cat= from the URL on load, filters the .product-card elements
+     already on this page by their data-category attribute, and keeps the
+     URL in sync as tabs are clicked (so the page is linkable/shareable
+     and the browser back button works) — all without a page reload.
+  ===================================================================== */
 
-  function showSignIn(){
-    tabSignIn.classList.add('is-active'); tabSignIn.setAttribute('aria-selected','true');
-    tabSignUp.classList.remove('is-active'); tabSignUp.setAttribute('aria-selected','false');
-    signInForm.classList.add('is-active');
-    signUpForm.classList.remove('is-active');
-    authFoot.innerHTML = 'New here? <a href="#" id="switchToSignUp">Create an account</a>';
-    document.getElementById('switchToSignUp').addEventListener('click', function(e){ e.preventDefault(); showSignUp(); });
+  var CATEGORY_LABELS = {
+    all: 'All Categories',
+    kurti: "Kurti's Set",
+    bandhani: 'Bandhani Suit',
+    floral: 'Floral',
+    sharara: 'Sharara'
+  };
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.product-card'));
+  var tabs  = Array.prototype.slice.call(document.querySelectorAll('.category-tab'));
+  var titleEl = document.getElementById('categoryTitle');
+  var emptyEl = document.getElementById('categoryEmpty');
+
+  if(cards.length === 0 || tabs.length === 0) return; // safety net if markup is missing
+
+  function getCategoryFromURL(){
+    var params = new URLSearchParams(window.location.search);
+    var cat = params.get('cat');
+    return CATEGORY_LABELS.hasOwnProperty(cat) ? cat : 'all';
   }
-  function showSignUp(){
-    tabSignUp.classList.add('is-active'); tabSignUp.setAttribute('aria-selected','true');
-    tabSignIn.classList.remove('is-active'); tabSignIn.setAttribute('aria-selected','false');
-    signUpForm.classList.add('is-active');
-    signInForm.classList.remove('is-active');
-    authFoot.innerHTML = 'Already have an account? <a href="#" id="switchToSignIn">Sign in</a>';
-    document.getElementById('switchToSignIn').addEventListener('click', function(e){ e.preventDefault(); showSignIn(); });
+
+  function applyCategory(cat){
+    var visibleCount = 0;
+    cards.forEach(function(card){
+      var matches = (cat === 'all') || (card.getAttribute('data-category') === cat);
+      card.style.display = matches ? '' : 'none';
+      if(matches) visibleCount += 1;
+    });
+
+    tabs.forEach(function(tab){
+      tab.classList.toggle('is-active', tab.getAttribute('data-cat') === cat);
+    });
+
+    if(titleEl) titleEl.textContent = CATEGORY_LABELS[cat] || 'All Categories';
+    if(emptyEl) emptyEl.hidden = visibleCount > 0;
+
+    var url = new URL(window.location.href);
+    if(cat === 'all'){
+      url.searchParams.delete('cat');
+    }else{
+      url.searchParams.set('cat', cat);
+    }
+    window.history.replaceState({}, '', url);
   }
 
-  tabSignIn.addEventListener('click', showSignIn);
-  tabSignUp.addEventListener('click', showSignUp);
-  switchToSignUp.addEventListener('click', function(e){ e.preventDefault(); showSignUp(); });
-
-  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  signInForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    var email = document.getElementById('signInEmail').value.trim();
-    var password = document.getElementById('signInPassword').value;
-    var errorEl = document.getElementById('signInError');
-
-    if(!emailPattern.test(email)){
-      errorEl.textContent = 'Please enter a valid email address.';
-      return;
-    }
-    if(!password){
-      errorEl.textContent = 'Please enter your password.';
-      return;
-    }
-    errorEl.textContent = '';
-
-    // TODO(auth): send { email, password } to your real sign-in endpoint
-    // and redirect on success. This demo just confirms the form works.
-    window.alert('This is a static demo — connect this form to your real authentication service to sign users in.');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(e){
+      // Filter instantly without a page reload. The anchor's href is left
+      // in place on purpose — if JavaScript is ever unavailable, clicking
+      // still works as a normal link (category.html reads ?cat= on load).
+      e.preventDefault();
+      applyCategory(tab.getAttribute('data-cat'));
+    });
   });
 
-  signUpForm.addEventListener('submit', function(e){
-    e.preventDefault();
-    var name = document.getElementById('signUpName').value.trim();
-    var email = document.getElementById('signUpEmail').value.trim();
-    var password = document.getElementById('signUpPassword').value;
-    var confirm = document.getElementById('signUpConfirm').value;
-    var errorEl = document.getElementById('signUpError');
-
-    if(!name){
-      errorEl.textContent = 'Please enter your name.';
-      return;
-    }
-    if(!emailPattern.test(email)){
-      errorEl.textContent = 'Please enter a valid email address.';
-      return;
-    }
-    if(password.length < 8){
-      errorEl.textContent = 'Password must be at least 8 characters.';
-      return;
-    }
-    if(password !== confirm){
-      errorEl.textContent = 'Passwords do not match.';
-      return;
-    }
-    errorEl.textContent = '';
-
-    // TODO(auth): send { name, email, password } to your real sign-up
-    // endpoint and handle the response. This demo just confirms the form works.
-    window.alert('This is a static demo — connect this form to your real authentication service to create accounts.');
+  // Support the browser back/forward buttons
+  window.addEventListener('popstate', function(){
+    applyCategory(getCategoryFromURL());
   });
+
+  applyCategory(getCategoryFromURL());
 
 })();

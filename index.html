@@ -44,9 +44,9 @@
       <a class="icon-btn" href="login.html" aria-label="Account, sign in or create account">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
       </a>
-      <button class="icon-btn bag-btn" aria-label="Bag, 2 items">
+      <button class="icon-btn bag-btn" id="cartOpen" aria-label="Bag" aria-haspopup="true" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
-        <span class="bag-count">2</span>
+        <span class="bag-count" id="bagCount" hidden>0</span>
       </button>
     </div>
   </div>
@@ -82,6 +82,30 @@
     <div class="search-results" id="searchResults"></div>
   </div>
 </div>
+
+<!-- ================= CART DRAWER ================= -->
+<!-- Client-side cart: items are stored in the browser's localStorage under "yc_cart",
+     so they persist between visits on the same device/browser. There is no server or
+     payment processing here — wire the "Checkout" button to your real checkout flow
+     (Stripe Checkout, a WhatsApp order-message link, your own backend, etc.) when ready. -->
+<div class="scrim" id="cartScrim"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping bag">
+  <div class="cart-head">
+    <h3>Your Bag</h3>
+    <button class="icon-btn" id="cartClose" aria-label="Close bag">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"><!-- populated by script.js --></div>
+  <div class="cart-empty" id="cartEmpty">
+    <p>Your bag is empty.</p>
+  </div>
+  <div class="cart-footer" id="cartFooter">
+    <div class="cart-subtotal">
+      <span>Subtotal</span>
+      <strong id="cartSubtotal">₹0</strong>
+    </div>
+    <button class="btn btn-primary cart-checkout" id="cartCheckout">Checkout</button>
+  </div>
+</aside>
 
 <main id="top">
 
@@ -124,24 +148,26 @@
           <h2>Shop by category</h2>
           <p>Four wardrobe essentials, updated every season.</p>
         </div>
-        <a href="#" class="section-link">View all categories</a>
+        <a href="category.html" class="section-link">View all categories</a>
       </div>
 
       <div class="category-rail">
-        <!-- Each category-card: REPLACE image + label -->
-        <a href="#" class="category-card">
+        <!-- Each category-card: REPLACE image + label. The href's ?cat= value
+             must match a data-cat on a .category-tab in category.html, and
+             a data-category on the matching .product-card below. -->
+        <a href="category.html?cat=kurti" class="category-card">
           <img class="ph" src="home/image/kurti.jfif" alt="kurti">
           <span class="label">Kurti's Set<span>3-Piece &amp; Embroided</span></span>
         </a>
-        <a href="#" class="category-card">
+        <a href="category.html?cat=bandhani" class="category-card">
           <img class="ph" src="home/image/bandhani.png" alt="Bandhani">
           <span class="label">Bandhani Suit<span>Soft Fabric &amp; Ethnic Wear</span></span>
         </a>
-        <a href="#" class="category-card">
+        <a href="category.html?cat=floral" class="category-card">
           <img class="ph" src="home/image/anarkali.png" alt="Anarkali">
           <span class="label">Floral<span>Elegant Finish &amp; Lightweight</span></span>
         </a>
-        <a href="#" class="category-card">
+        <a href="category.html?cat=sharara" class="category-card">
           <img class="ph" src="home/image/sharara.png" alt="Sharara">
           <span class="label">Sharara<span>Rich Fabric &amp; Royal Finish</span></span>
         </a>
@@ -157,7 +183,7 @@
           <h2>This week's edit</h2>
           <p>The pieces our customers keep coming back for.</p>
         </div>
-        <a href="#" class="section-link">View all products</a>
+        <a href="category.html" class="section-link">View all products</a>
       </div>
 
       <div class="product-grid">
@@ -166,7 +192,7 @@
              Swap the two images (main + alt shown on hover), name, price, and colors.
              data-id / data-name / data-price / data-image are read by script.js for the search bar —
              keep data-id unique per card and data-price a plain number (no ₹ sign). -->
-        <div class="product-card" data-id="p1" data-name="Pink Floral Anarkali Set" data-price="1199" data-image="home/image/ph-main1.png">
+        <div class="product-card" data-id="p1" data-name="Pink Floral Anarkali Set" data-price="1199" data-image="home/image/ph-main1.png" data-category="floral">
           <div class="product-media">
             <span class="product-tag">New</span>
             <img class="ph main" src="home/image/ph-main1.png" alt="Pink Floral Anarkali Set">
@@ -184,7 +210,7 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p2" data-name="Ivory Kurti Set" data-price="999" data-image="home/image/ph-main2.png">
+        <div class="product-card" data-id="p2" data-name="Ivory Kurti Set" data-price="999" data-image="home/image/ph-main2.png" data-category="kurti">
           <div class="product-media">
             <img class="ph main" src="home/image/ph-main2.png" alt="Ivory Kurti Set">
             <img class="ph alt" src="home/image/ph-alt2.png" alt="Ivory Kurti Set backview">
@@ -201,7 +227,7 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p3" data-name="Mauve Floral Kurta Set" data-price="699" data-image="home/image/ph-main3.jpeg">
+        <div class="product-card" data-id="p3" data-name="Mauve Floral Kurta Set" data-price="699" data-image="home/image/ph-main3.jpeg" data-category="kurti">
           <div class="product-media">
             <span class="product-tag">Sale</span>
             <img class="ph main" src="home/image/ph-main3.jpeg" alt="Mauve Floral Kurta Set">
@@ -219,7 +245,7 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p4" data-name="Cerulean Floral Set" data-price="899" data-image="home/image/ph-main4.jfif">
+        <div class="product-card" data-id="p4" data-name="Cerulean Floral Set" data-price="899" data-image="home/image/ph-main4.jfif" data-category="floral">
           <div class="product-media">
             <img class="ph main" src="home/image/ph-main4.jfif" alt="Cerulean Floral Set">
             <img class="ph alt" src="home/image/ph-alt4.png" alt="Cerulean Floral Set Backview">
@@ -343,10 +369,10 @@
         <h4>Shop</h4>
         <ul>
           <li><a href="#bestsellers">New In</a></li>
-          <li><a href="#category">Kurti's Set</a></li>
-          <li><a href="#category">Bandhani Suit</a></li>
-          <li><a href="#category">Floral's</a></li>
-          <li><a href="#category">Sharara's</a></li>
+          <li><a href="category.html?cat=kurti">Kurti's Set</a></li>
+          <li><a href="category.html?cat=bandhani">Bandhani Suit</a></li>
+          <li><a href="category.html?cat=floral">Floral's</a></li>
+          <li><a href="category.html?cat=sharara">Sharara's</a></li>
         </ul>
       </div>
 

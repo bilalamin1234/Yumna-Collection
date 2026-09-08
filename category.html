@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop by Category — Yumna Collection</title>
+    <meta name="description" content="Browse Yumna Collection by category — Kurti's Set, Bandhani Suit, Floral, and Sharara.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="responsive.css">
+    <script src="script.js" defer></script>
+    <script src="categories.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ================= ANNOUNCEMENT BAR ================= -->
+<div class="announce" id="announceBar">
+  Free shipping on orders over ₹2000 — easy 3-day returns
+  <button id="announceClose" aria-label="Dismiss announcement">✕</button>
+</div>
+
+<!-- ================= HEADER =================
+     Same header as index.html. Nav links point back to index.html's sections
+     since those sections don't exist on this page. -->
+<header class="site-header" id="siteHeader">
+  <div class="wrap nav-row">
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- REPLACE: brand name -->
+    <a href="index.html" class="brand-mark">Yumna <em>&amp;</em> Collection</a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <a href="index.html#new-in">New In</a>
+      <a href="index.html#category">Shop</a>
+      <a href="index.html#lookbook">Edit</a>
+      <a href="index.html#story">Our Story</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="searchOpen" aria-label="Search" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <a class="icon-btn" href="login.html" aria-label="Account, sign in or create account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+      </a>
+      <button class="icon-btn bag-btn" id="cartOpen" aria-label="Bag" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="bag-count" id="bagCount" hidden>0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MOBILE MENU PANEL ================= -->
+<div class="scrim" id="scrim"></div>
+<aside class="mobile-panel" id="mobilePanel">
+  <div class="mobile-panel-head">
+    <span class="brand-mark" style="font-size:20px;">Yumna <em>&amp;</em> Collection</span>
+    <button class="icon-btn" id="panelClose" aria-label="Close menu">✕</button>
+  </div>
+  <nav aria-label="Mobile">
+    <a href="index.html#new-in">New In</a>
+    <a href="index.html#category">Shop</a>
+    <a href="index.html#lookbook">Edit</a>
+    <a href="index.html#story">Our Story</a>
+    <a href="index.html#contact">Contact</a>
+    <a href="login.html">Account</a>
+  </nav>
+</aside>
+
+<!-- ================= SEARCH OVERLAY ================= -->
+<!-- Filters the products already in the page (see .product-card below) — no backend needed. -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="wrap search-overlay-inner">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search products…" autocomplete="off" aria-label="Search products">
+      <button class="icon-btn" id="searchClose" aria-label="Close search">✕</button>
+    </div>
+    <p class="search-hint" id="searchHint">Start typing to search across all products.</p>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ================= CART DRAWER ================= -->
+<!-- Client-side cart: items are stored in the browser's localStorage under "yc_cart",
+     so they persist between visits on the same device/browser, including here. -->
+<div class="scrim" id="cartScrim"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Shopping bag">
+  <div class="cart-head">
+    <h3>Your Bag</h3>
+    <button class="icon-btn" id="cartClose" aria-label="Close bag">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"><!-- populated by script.js --></div>
+  <div class="cart-empty" id="cartEmpty">
+    <p>Your bag is empty.</p>
+  </div>
+  <div class="cart-footer" id="cartFooter">
+    <div class="cart-subtotal">
+      <span>Subtotal</span>
+      <strong id="cartSubtotal">₹0</strong>
+    </div>
+    <button class="btn btn-primary cart-checkout" id="cartCheckout">Checkout</button>
+  </div>
+</aside>
+
+<main id="top">
+
+  <!-- ================= CATEGORY PAGE HEAD ================= -->
+  <section class="section category-page-head">
+    <div class="wrap">
+      <p class="breadcrumb"><a href="index.html">Home</a> / <span id="categoryTitle">All Categories</span></p>
+      <h1 id="categoryHeading">Shop by Category</h1>
+      <p class="lede">Browse everything, or pick a category to narrow things down.</p>
+
+      <!-- data-cat on each tab must match a data-category value on the
+           .product-card elements below, and the ?cat= value used in
+           index.html's category-rail links. -->
+      <div class="category-tabs" role="tablist" id="categoryTabs">
+        <a href="category.html?cat=all" class="category-tab" data-cat="all">All</a>
+        <a href="category.html?cat=kurti" class="category-tab" data-cat="kurti">Kurti's Set</a>
+        <a href="category.html?cat=bandhani" class="category-tab" data-cat="bandhani">Bandhani Suit</a>
+        <a href="category.html?cat=floral" class="category-tab" data-cat="floral">Floral</a>
+        <a href="category.html?cat=sharara" class="category-tab" data-cat="sharara">Sharara</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FILTERED PRODUCT GRID ================= -->
+  <section class="section" style="padding-top:0;">
+    <div class="wrap">
+
+      <p class="category-empty" id="categoryEmpty" hidden>
+        No products in this category yet — check back soon, or browse another category above.
+      </p>
+
+      <div class="product-grid">
+
+        <!-- Same product cards as index.html's "This week's edit" — kept in sync
+             manually since this is a static site. Each needs data-category so
+             the tabs above can filter it; everything else (data-id/name/price/
+             image) is what the cart and search already use. -->
+        <div class="product-card" data-id="p1" data-name="Pink Floral Anarkali Set" data-price="1199" data-image="home/image/ph-main1.png" data-category="floral">
+          <div class="product-media">
+            <span class="product-tag">New</span>
+            <img class="ph main" src="home/image/ph-main1.png" alt="Pink Floral Anarkali Set">
+            <img class="ph alt" src="home/image/ph-alt1.png" alt="Pink Floral Anarkali Set Backview">
+            <button class="product-quickadd">Quick add</button>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3>Pink Floral Anarkali Set</h3>
+              <div class="swatches">
+                <i style="background:beige"></i><i style="background:lightcyan"></i><i style="background:lightpink"></i>
+              </div>
+            </div>
+            <div class="product-price"><span class="now">₹1199</span></div>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="p2" data-name="Ivory Kurti Set" data-price="999" data-image="home/image/ph-main2.png" data-category="kurti">
+          <div class="product-media">
+            <img class="ph main" src="home/image/ph-main2.png" alt="Ivory Kurti Set">
+            <img class="ph alt" src="home/image/ph-alt2.png" alt="Ivory Kurti Set backview">
+            <button class="product-quickadd">Quick add</button>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3>Ivory Kurti Set</h3>
+              <div class="swatches">
+                <i style="background:#e9e4d8"></i><i style="background:black"></i>
+              </div>
+            </div>
+            <div class="product-price"><span class="now">₹999</span></div>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="p3" data-name="Mauve Floral Kurti Set" data-price="699" data-image="home/image/ph-main3.jpeg" data-category="kurti">
+          <div class="product-media">
+            <span class="product-tag">Sale</span>
+            <img class="ph main" src="home/image/ph-main3.jpeg" alt="Mauve Floral Kurti Set">
+            <img class="ph alt" src="home/image/ph-alt3.png" alt="Mauve Floral Kurta Set Backview">
+            <button class="product-quickadd">Quick add</button>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3>Mauve Floral Kurti Set</h3>
+              <div class="swatches">
+                <i style="background:rosybrown"></i><i style="background:lightcoral"></i>
+              </div>
+            </div>
+            <div class="product-price"><span class="now">₹699</span><span class="was">₹1099</span></div>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="p4" data-name="Cerulean Floral Kurti Set" data-price="899" data-image="home/image/ph-main4.jfif" data-category="floral">
+          <div class="product-media">
+            <img class="ph main" src="home/image/ph-main4.jfif" alt="Cerulean Floral Kurti Set">
+            <img class="ph alt" src="home/image/ph-alt4.png" alt="Cerulean Floral Set Backview">
+            <button class="product-quickadd">Quick add</button>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3>Cerulean Floral Kurti Set</h3>
+              <div class="swatches">
+                <i style="background:lightblue"></i><i style="background:lightseagreen"></i><i style="background:#c9c0af"></i>
+              </div>
+            </div>
+            <div class="product-price"><span class="now">₹899</span></div>
+          </div>
+        </div>
+		
+		<div class="product-card" data-id="p5" data-name="Pista Green Kurti Set" data-price="899" data-image="home/image/ph-main4.jfif" data-category="kurti">
+          <div class="product-media">
+            <img class="ph main" src="home/image/kurti-category (1).jpeg" alt="Pista Green Kurti Set">
+            <img class="ph alt" src="home/image/kurti-category back 1.png" alt="Pista Green Kurti Set">
+            <button class="product-quickadd">Quick add</button>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3>Pista Green Kurti Set</h3>
+              <div class="swatches">
+                <i style="background:lightblue"></i><i style="background:lightseagreen"></i><i style="background:#c9c0af"></i>
+              </div>
+            </div>
+            <div class="product-price"><span class="now">₹899</span></div>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="p6" data-name="Bandhani Suit" data-price="1499" data-image="home/image/bandhani.png" data-category="Bandhani">
+          <div class="product-media">
+            <img class="ph main" src="home/image/bandhani.png" alt="Bandhani Suit">
+            <img class="ph alt" src="home/image/bandhani-back.png" alt="Bandhani Suit backview">
+            <button class="product-quickadd">Quick add</button>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3>Bandhani Suit</h3>
+              <div class="swatches">
+                <i style="background:red"></i><i style="background:violet"></i>
+              </div>
+            </div>
+            <div class="product-price"><span class="now">₹1499</span></div>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="p7" data-name="Sharara" data-price="1999" data-image="home/image/bandhani.png" data-category="Bandhani">
+          <div class="product-media">
+            <img class="ph main" src="home/image/sharara.png" alt="Sharara">
+            <img class="ph alt" src="home/image/sharara-back.png" alt="Sharara backview">
+            <button class="product-quickadd">Quick add</button>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3>Sharara</h3>
+              <div class="swatches">
+                <i style="background:#C26426"></i><i style="background:darkred"></i>
+              </div>
+            </div>
+            <div class="product-price"><span class="now">₹1999</span></div>
+          </div>
+        </div>
+
+        <!-- No Bandhani Suit or Sharara products yet — add new .product-card
+             blocks here with data-category="bandhani" or data-category="sharara"
+             (copy one of the blocks above) and they'll show up under those tabs
+             automatically. -->
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <!-- REPLACE: brand name -->
+        <span class="brand-mark">Yumna <em>&amp;</em> Collection</span>
+        <p>Considered clothing for people who'd rather buy one good ethenic wear than three bad ones. Designed in-studio, made with mills we trust.</p>
+        <div class="footer-social" aria-label="Social links">
+          <a href="https://www.instagram.com/" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="https://in.pinterest.com/" aria-label="Pinterest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 17c1-3 1.5-6 1.5-8a3 3 0 1 1 3 3c-.5 2-1 4.5-1 6"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="index.html#bestsellers">New In</a></li>
+          <li><a href="category.html?cat=kurti">Kurti's Set</a></li>
+          <li><a href="category.html?cat=bandhani">Bandhani Suit</a></li>
+          <li><a href="category.html?cat=floral">Floral's</a></li>
+          <li><a href="category.html?cat=sharara">Sharara's</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#">Size guide</a></li>
+          <li><a href="#">Shipping &amp; returns</a></li>
+          <li><a href="#">Track an order</a></li>
+          <li><a href="#">FAQs</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="index.html#story">Our story</a></li>
+          <li><a href="#">Materials</a></li>
+          <li><a href="#">Stores</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> Yumna &amp; Collection. All rights reserved.</span>
+      <div class="payments">
+        <span>VISA</span><span>UPI</span><span>AMEX</span><span>PAYPAL</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+</body>
+</html>
