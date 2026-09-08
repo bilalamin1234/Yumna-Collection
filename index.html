@@ -38,12 +38,12 @@
     </nav>
 
     <div class="header-actions">
-      <button class="icon-btn" aria-label="Search">
+      <button class="icon-btn" id="searchOpen" aria-label="Search" aria-haspopup="true" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
-      <button class="icon-btn" aria-label="Account">
+      <a class="icon-btn" href="login.html" aria-label="Account, sign in or create account">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/></svg>
-      </button>
+      </a>
       <button class="icon-btn bag-btn" aria-label="Bag, 2 items">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
         <span class="bag-count">2</span>
@@ -56,7 +56,7 @@
 <div class="scrim" id="scrim"></div>
 <aside class="mobile-panel" id="mobilePanel">
   <div class="mobile-panel-head">
-    <span class="brand-mark" style="font-size:20px;">Ashford <em>&amp;</em> Vane</span>
+    <span class="brand-mark" style="font-size:20px;">Yumna <em>&amp;</em> Collection</span>
     <button class="icon-btn" id="panelClose" aria-label="Close menu">✕</button>
   </div>
   <nav aria-label="Mobile">
@@ -65,8 +65,23 @@
     <a href="#lookbook">Edit</a>
     <a href="#story">Our Story</a>
     <a href="#contact">Contact</a>
+    <a href="login.html">Account</a>
   </nav>
 </aside>
+
+<!-- ================= SEARCH OVERLAY ================= -->
+<!-- Filters the products already in the page (see .product-card below) — no backend needed. -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="wrap search-overlay-inner">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Search products…" autocomplete="off" aria-label="Search products">
+      <button class="icon-btn" id="searchClose" aria-label="Close search">✕</button>
+    </div>
+    <p class="search-hint" id="searchHint">Start typing to search across all products.</p>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
 
 <main id="top">
 
@@ -90,11 +105,11 @@
       <div class="hero-media">
         <!-- REPLACE: main hero photo, portrait crop, ~1000x1250px -->
         <div class="frame-1">
-          <img class="ph" src="home/image/frame-1.jfif" alt="Model wearing the new autumn collection">
+          <img class="ph" src="home/image/frame-1.jfif" alt="Floral Suit">
         </div>
         <!-- REPLACE: secondary detail photo, ~600x800px -->
         <div class="frame-2">
-          <img class="ph" src="home/image/detailed-shot.png" alt="Fabric and stitching detail">
+          <img class="ph" src="home/image/detailed-shot.png" alt="Floral Suit Detailed">
         </div>
         <div class="hero-tag"><strong>Floral Suit</strong>Cotton Fabric, Soft Texture</div>
       </div>
@@ -115,19 +130,19 @@
       <div class="category-rail">
         <!-- Each category-card: REPLACE image + label -->
         <a href="#" class="category-card">
-          <img class="ph" src="home/image/kurti.jfif" alt="Outerwear">
+          <img class="ph" src="home/image/kurti.jfif" alt="kurti">
           <span class="label">Kurti's Set<span>3-Piece &amp; Embroided</span></span>
         </a>
         <a href="#" class="category-card">
-          <img class="ph" src="home/image/bandhani.png" alt="Shirts">
+          <img class="ph" src="home/image/bandhani.png" alt="Bandhani">
           <span class="label">Bandhani Suit<span>Soft Fabric &amp; Ethnic Wear</span></span>
         </a>
         <a href="#" class="category-card">
-          <img class="ph" src="home/image/anarkali.png" alt="Trousers">
+          <img class="ph" src="home/image/anarkali.png" alt="Anarkali">
           <span class="label">Floral<span>Elegant Finish &amp; Lightweight</span></span>
         </a>
         <a href="#" class="category-card">
-          <img class="ph" src="home/image/sharara.png" alt="Knitwear">
+          <img class="ph" src="home/image/sharara.png" alt="Sharara">
           <span class="label">Sharara<span>Rich Fabric &amp; Royal Finish</span></span>
         </a>
       </div>
@@ -148,12 +163,14 @@
       <div class="product-grid">
 
         <!-- PRODUCT CARD — duplicate this block for each product.
-             Swap the two images (main + alt shown on hover), name, price, and colors. -->
-        <div class="product-card">
+             Swap the two images (main + alt shown on hover), name, price, and colors.
+             data-id / data-name / data-price / data-image are read by script.js for the search bar —
+             keep data-id unique per card and data-price a plain number (no ₹ sign). -->
+        <div class="product-card" data-id="p1" data-name="Pink Floral Anarkali Set" data-price="1199" data-image="home/image/ph-main1.png">
           <div class="product-media">
             <span class="product-tag">New</span>
-            <img class="ph main" src="home/image/ph-main1.png" alt="Waxed field jacket, front view">
-            <img class="ph alt" src="home/image/ph-alt1.png" alt="Waxed field jacket, back view">
+            <img class="ph main" src="home/image/ph-main1.png" alt="Pink Floral Anarkali Set">
+            <img class="ph alt" src="home/image/ph-alt1.png" alt="Pink Floral Anarkali Set Backview">
             <button class="product-quickadd">Quick add</button>
           </div>
           <div class="product-info">
@@ -167,10 +184,10 @@
           </div>
         </div>
 
-        <div class="product-card">
+        <div class="product-card" data-id="p2" data-name="Ivory Kurti Set" data-price="999" data-image="home/image/ph-main2.png">
           <div class="product-media">
-            <img class="ph main" src="home/image/ph-main2.png" alt="Cotton oxford shirt, front view">
-            <img class="ph alt" src="home/image/ph-alt2.png" alt="Cotton oxford shirt, back view">
+            <img class="ph main" src="home/image/ph-main2.png" alt="Ivory Kurti Set">
+            <img class="ph alt" src="home/image/ph-alt2.png" alt="Ivory Kurti Set backview">
             <button class="product-quickadd">Quick add</button>
           </div>
           <div class="product-info">
@@ -184,11 +201,11 @@
           </div>
         </div>
 
-        <div class="product-card">
+        <div class="product-card" data-id="p3" data-name="Mauve Floral Kurta Set" data-price="699" data-image="home/image/ph-main3.jpeg">
           <div class="product-media">
             <span class="product-tag">Sale</span>
-            <img class="ph main" src="home/image/ph-main3.jpeg" alt="Tailored wool trouser, front view">
-            <img class="ph alt" src="home/image/ph-alt3.png" alt="Tailored wool trouser, back view">
+            <img class="ph main" src="home/image/ph-main3.jpeg" alt="Mauve Floral Kurta Set">
+            <img class="ph alt" src="home/image/ph-alt3.png" alt="Mauve Floral Kurta Set Backview">
             <button class="product-quickadd">Quick add</button>
           </div>
           <div class="product-info">
@@ -202,10 +219,10 @@
           </div>
         </div>
 
-        <div class="product-card">
+        <div class="product-card" data-id="p4" data-name="Cerulean Floral Set" data-price="899" data-image="home/image/ph-main4.jfif">
           <div class="product-media">
-            <img class="ph main" src="home/image/ph-main4.jfif" alt="Merino crewneck sweater, front view">
-            <img class="ph alt" src="home/image/ph-alt4.png" alt="Merino crewneck sweater, back view">
+            <img class="ph main" src="home/image/ph-main4.jfif" alt="Cerulean Floral Set">
+            <img class="ph alt" src="home/image/ph-alt4.png" alt="Cerulean Floral Set Backview">
             <button class="product-quickadd">Quick add</button>
           </div>
           <div class="product-info">
@@ -328,7 +345,7 @@
           <li><a href="#bestsellers">New In</a></li>
           <li><a href="#category">Kurti's Set</a></li>
           <li><a href="#category">Bandhani Suit</a></li>
-          <li><a href="#category">Floral's</li>
+          <li><a href="#category">Floral's</a></li>
           <li><a href="#category">Sharara's</a></li>
         </ul>
       </div>

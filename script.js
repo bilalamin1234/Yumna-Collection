@@ -89,4 +89,189 @@
   /* ---------- Footer year ---------- */
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  /* =====================================================================
+     SEARCH OVERLAY
+     Filters the products already present in the page — reads each
+     .product-card's data-id / data-name / data-price / data-image
+     attributes, so it needs no backend and no separate product list
+     to maintain. Add a product to the page and it's searchable.
+  ===================================================================== */
+  var searchOpenBtn  = document.getElementById('searchOpen');
+  var searchOverlay  = document.getElementById('searchOverlay');
+  var searchCloseBtn = document.getElementById('searchClose');
+  var searchInput    = document.getElementById('searchInput');
+  var searchResults  = document.getElementById('searchResults');
+  var searchHint     = document.getElementById('searchHint');
+
+  var productCards = Array.prototype.slice.call(document.querySelectorAll('.product-card'));
+  var products = productCards.map(function(card){
+    return {
+      id: card.getAttribute('data-id'),
+      name: card.getAttribute('data-name') || '',
+      price: parseFloat(card.getAttribute('data-price')) || 0,
+      image: card.getAttribute('data-image') || '',
+      el: card
+    };
+  });
+
+  function openSearch(){
+    searchOverlay.classList.add('is-open');
+    searchOpenBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    window.setTimeout(function(){ searchInput.focus(); }, 60);
+  }
+  function closeSearch(){
+    searchOverlay.classList.remove('is-open');
+    searchOpenBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    searchInput.value = '';
+    renderSearchResults('');
+  }
+  function renderSearchResults(rawQuery){
+    var query = rawQuery.trim().toLowerCase();
+    searchResults.innerHTML = '';
+
+    if(!query){
+      searchHint.style.display = 'block';
+      searchHint.textContent = 'Start typing to search across all products.';
+      return;
+    }
+    searchHint.style.display = 'none';
+
+    var matches = products.filter(function(p){
+      return p.name.toLowerCase().indexOf(query) !== -1;
+    });
+
+    if(matches.length === 0){
+      var none = document.createElement('p');
+      none.className = 'search-no-results';
+      none.textContent = 'No products match "' + rawQuery.trim() + '".';
+      searchResults.appendChild(none);
+      return;
+    }
+
+    matches.forEach(function(p){
+      var row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'search-result';
+      row.innerHTML =
+        '<img src="' + p.image + '" alt="">' +
+        '<span class="sr-info"><h4>' + p.name + '</h4></span>' +
+        '<span class="sr-price">\u20B9' + p.price + '</span>';
+      row.addEventListener('click', function(){
+        closeSearch();
+        p.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        p.el.style.transition = 'box-shadow .3s ease';
+        p.el.style.boxShadow = '0 0 0 3px var(--clay)';
+        window.setTimeout(function(){ p.el.style.boxShadow = ''; }, 1400);
+      });
+      searchResults.appendChild(row);
+    });
+  }
+
+  searchOpenBtn.addEventListener('click', openSearch);
+  searchCloseBtn.addEventListener('click', closeSearch);
+  searchInput.addEventListener('input', function(){
+    renderSearchResults(searchInput.value);
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && searchOverlay.classList.contains('is-open')) closeSearch();
+  });
+
+})();
+
+
+
+
+
+
+
+
+
+(function(){
+  "use strict";
+
+  var tabSignIn = document.getElementById('tabSignIn');
+  var tabSignUp = document.getElementById('tabSignUp');
+  var signInForm = document.getElementById('signInForm');
+  var signUpForm = document.getElementById('signUpForm');
+  var authFoot = document.getElementById('authFoot');
+  var switchToSignUp = document.getElementById('switchToSignUp');
+
+  function showSignIn(){
+    tabSignIn.classList.add('is-active'); tabSignIn.setAttribute('aria-selected','true');
+    tabSignUp.classList.remove('is-active'); tabSignUp.setAttribute('aria-selected','false');
+    signInForm.classList.add('is-active');
+    signUpForm.classList.remove('is-active');
+    authFoot.innerHTML = 'New here? <a href="#" id="switchToSignUp">Create an account</a>';
+    document.getElementById('switchToSignUp').addEventListener('click', function(e){ e.preventDefault(); showSignUp(); });
+  }
+  function showSignUp(){
+    tabSignUp.classList.add('is-active'); tabSignUp.setAttribute('aria-selected','true');
+    tabSignIn.classList.remove('is-active'); tabSignIn.setAttribute('aria-selected','false');
+    signUpForm.classList.add('is-active');
+    signInForm.classList.remove('is-active');
+    authFoot.innerHTML = 'Already have an account? <a href="#" id="switchToSignIn">Sign in</a>';
+    document.getElementById('switchToSignIn').addEventListener('click', function(e){ e.preventDefault(); showSignIn(); });
+  }
+
+  tabSignIn.addEventListener('click', showSignIn);
+  tabSignUp.addEventListener('click', showSignUp);
+  switchToSignUp.addEventListener('click', function(e){ e.preventDefault(); showSignUp(); });
+
+  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  signInForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = document.getElementById('signInEmail').value.trim();
+    var password = document.getElementById('signInPassword').value;
+    var errorEl = document.getElementById('signInError');
+
+    if(!emailPattern.test(email)){
+      errorEl.textContent = 'Please enter a valid email address.';
+      return;
+    }
+    if(!password){
+      errorEl.textContent = 'Please enter your password.';
+      return;
+    }
+    errorEl.textContent = '';
+
+    // TODO(auth): send { email, password } to your real sign-in endpoint
+    // and redirect on success. This demo just confirms the form works.
+    window.alert('This is a static demo — connect this form to your real authentication service to sign users in.');
+  });
+
+  signUpForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('signUpName').value.trim();
+    var email = document.getElementById('signUpEmail').value.trim();
+    var password = document.getElementById('signUpPassword').value;
+    var confirm = document.getElementById('signUpConfirm').value;
+    var errorEl = document.getElementById('signUpError');
+
+    if(!name){
+      errorEl.textContent = 'Please enter your name.';
+      return;
+    }
+    if(!emailPattern.test(email)){
+      errorEl.textContent = 'Please enter a valid email address.';
+      return;
+    }
+    if(password.length < 8){
+      errorEl.textContent = 'Password must be at least 8 characters.';
+      return;
+    }
+    if(password !== confirm){
+      errorEl.textContent = 'Passwords do not match.';
+      return;
+    }
+    errorEl.textContent = '';
+
+    // TODO(auth): send { name, email, password } to your real sign-up
+    // endpoint and handle the response. This demo just confirms the form works.
+    window.alert('This is a static demo — connect this form to your real authentication service to create accounts.');
+  });
+
 })();
