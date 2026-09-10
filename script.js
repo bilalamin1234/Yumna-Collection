@@ -318,82 +318,37 @@
 
   renderCart();
 
-})();
-
-
-
-
-(function(){
-  "use strict";
-
   /* =====================================================================
-     CATEGORY FILTERING (category.html only)
-     Reads ?cat= from the URL on load, filters the .product-card elements
-     already on this page by their data-category attribute, and keeps the
-     URL in sync as tabs are clicked (so the page is linkable/shareable
-     and the browser back button works) — all without a page reload.
+     SIZE GUIDE MODAL
+     A simple popup showing the size chart table already in the HTML.
+     Guarded with the `if` below so this does nothing on any page that
+     doesn't have the modal markup — safe to include everywhere.
   ===================================================================== */
+  var sizeGuideOpenBtn  = document.getElementById('sizeGuideOpen');
+  var sizeGuideModal    = document.getElementById('sizeGuideModal');
+  var sizeGuideScrim    = document.getElementById('sizeGuideScrim');
+  var sizeGuideCloseBtn = document.getElementById('sizeGuideClose');
 
-  var CATEGORY_LABELS = {
-    all: 'All Categories',
-    kurti: "Kurti's Set",
-    bandhani: 'Bandhani Suit',
-    floral: 'Floral',
-    sharara: 'Sharara'
-  };
-
-  var cards = Array.prototype.slice.call(document.querySelectorAll('.product-card'));
-  var tabs  = Array.prototype.slice.call(document.querySelectorAll('.category-tab'));
-  var titleEl = document.getElementById('categoryTitle');
-  var emptyEl = document.getElementById('categoryEmpty');
-
-  if(cards.length === 0 || tabs.length === 0) return; // safety net if markup is missing
-
-  function getCategoryFromURL(){
-    var params = new URLSearchParams(window.location.search);
-    var cat = params.get('cat');
-    return CATEGORY_LABELS.hasOwnProperty(cat) ? cat : 'all';
-  }
-
-  function applyCategory(cat){
-    var visibleCount = 0;
-    cards.forEach(function(card){
-      var matches = (cat === 'all') || (card.getAttribute('data-category') === cat);
-      card.style.display = matches ? '' : 'none';
-      if(matches) visibleCount += 1;
-    });
-
-    tabs.forEach(function(tab){
-      tab.classList.toggle('is-active', tab.getAttribute('data-cat') === cat);
-    });
-
-    if(titleEl) titleEl.textContent = CATEGORY_LABELS[cat] || 'All Categories';
-    if(emptyEl) emptyEl.hidden = visibleCount > 0;
-
-    var url = new URL(window.location.href);
-    if(cat === 'all'){
-      url.searchParams.delete('cat');
-    }else{
-      url.searchParams.set('cat', cat);
+  if(sizeGuideOpenBtn && sizeGuideModal && sizeGuideScrim && sizeGuideCloseBtn){
+    function openSizeGuide(e){
+      if(e) e.preventDefault();
+      sizeGuideModal.classList.add('is-open');
+      sizeGuideScrim.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
     }
-    window.history.replaceState({}, '', url);
-  }
+    function closeSizeGuide(){
+      sizeGuideModal.classList.remove('is-open');
+      sizeGuideScrim.classList.remove('is-visible');
+      document.body.style.overflow = '';
+    }
 
-  tabs.forEach(function(tab){
-    tab.addEventListener('click', function(e){
-      // Filter instantly without a page reload. The anchor's href is left
-      // in place on purpose — if JavaScript is ever unavailable, clicking
-      // still works as a normal link (category.html reads ?cat= on load).
-      e.preventDefault();
-      applyCategory(tab.getAttribute('data-cat'));
+    sizeGuideOpenBtn.addEventListener('click', openSizeGuide);
+    sizeGuideCloseBtn.addEventListener('click', closeSizeGuide);
+    sizeGuideScrim.addEventListener('click', closeSizeGuide);
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && sizeGuideModal.classList.contains('is-open')) closeSizeGuide();
     });
-  });
-
-  // Support the browser back/forward buttons
-  window.addEventListener('popstate', function(){
-    applyCategory(getCategoryFromURL());
-  });
-
-  applyCategory(getCategoryFromURL());
+  }
 
 })();

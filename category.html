@@ -108,6 +108,41 @@
   </div>
 </aside>
 
+<!-- ================= SIZE GUIDE MODAL ================= -->
+<!-- REPLACE the numbers in the table below with your brand's real measurements
+     (all placeholder for now). Add/remove <tr> rows if your sizes differ. -->
+<div class="scrim" id="sizeGuideScrim"></div>
+<div class="modal" id="sizeGuideModal" role="dialog" aria-modal="true" aria-labelledby="sizeGuideTitle">
+  <div class="modal-head">
+    <h3 id="sizeGuideTitle">Size Guide</h3>
+    <button class="icon-btn" id="sizeGuideClose" aria-label="Close size guide">✕</button>
+  </div>
+  <div class="modal-body">
+    <p class="modal-note">All measurements are in inches. If you're between two sizes, we recommend sizing up.</p>
+    <div class="size-table-wrap">
+      <table class="size-table">
+        <thead>
+          <tr><th>Size</th><th>Bust</th><th>Waist</th><th>Hip</th><th>Shoulder</th><th>Length</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>XS</td><td>34</td><td>28</td><td>36</td><td>13.5</td><td>44</td></tr>
+          <tr><td>S</td><td>36</td><td>30</td><td>38</td><td>14</td><td>45</td></tr>
+          <tr><td>M</td><td>38</td><td>32</td><td>40</td><td>14.5</td><td>46</td></tr>
+          <tr><td>L</td><td>40</td><td>34</td><td>42</td><td>15</td><td>47</td></tr>
+          <tr><td>XL</td><td>42</td><td>36</td><td>44</td><td>15.5</td><td>48</td></tr>
+          <tr><td>XXL</td><td>44</td><td>38</td><td>46</td><td>16</td><td>49</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="modal-note">
+      <strong>How to measure:</strong> Bust — around the fullest part of your chest.
+      Waist — around the narrowest part of your torso. Hip — around the fullest part
+      of your hips. Shoulder — across the back from shoulder point to shoulder point.
+      Length — from the highest shoulder point down to your desired hemline.
+    </p>
+  </div>
+</div>
+
 <main id="top">
 
   <!-- ================= CATEGORY PAGE HEAD ================= -->
@@ -143,7 +178,11 @@
         <!-- Same product cards as index.html's "This week's edit" — kept in sync
              manually since this is a static site. Each needs data-category so
              the tabs above can filter it; everything else (data-id/name/price/
-             image) is what the cart and search already use. -->
+             image) is what the cart and search already use.
+             IMPORTANT: data-category must exactly match a data-cat value on the
+             tabs above — lowercase, single word (kurti / bandhani / floral /
+             sharara). data-image must exactly match the visible <img class="main">
+             src, since that's what the search overlay and cart drawer show. -->
         <div class="product-card" data-id="p1" data-name="Pink Floral Anarkali Set" data-price="1199" data-image="home/image/ph-main1.png" data-category="floral">
           <div class="product-media">
             <span class="product-tag">New</span>
@@ -162,7 +201,7 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p2" data-name="Bandhani Suit" data-price="1499" data-image="home/image/bandhani.png" data-category="Bandhani">
+        <div class="product-card" data-id="p2" data-name="Bandhani Suit" data-price="1499" data-image="home/image/bandhani.png" data-category="bandhani">
           <div class="product-media">
             <img class="ph main" src="home/image/bandhani.png" alt="Bandhani Suit">
             <img class="ph alt" src="home/image/bandhani-back.png" alt="Bandhani Suit backview">
@@ -197,9 +236,9 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p4" data-name="Sharara" data-price="1999" data-image="home/image/bandhani.png" data-category="Bandhani">
+        <div class="product-card" data-id="p4" data-name="Sharara" data-price="1999" data-image="home/image/sharara.jpeg" data-category="sharara">
           <div class="product-media">
-            <img class="ph main" src="home/image/sharara.png" alt="Sharara">
+            <img class="ph main" src="home/image/sharara.jpeg" alt="Sharara">
             <img class="ph alt" src="home/image/sharara-back.png" alt="Sharara backview">
             <button class="product-quickadd">Quick add</button>
           </div>
@@ -231,7 +270,7 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p6" data-name="Pista Green Kurti Set" data-price="899" data-image="home/image/ph-main4.jfif" data-category="kurti">
+        <div class="product-card" data-id="p6" data-name="Pista Green Kurti Set" data-price="899" data-image="home/image/kurti-category (1).jpeg" data-category="kurti">
           <div class="product-media">
             <img class="ph main" src="home/image/kurti-category (1).jpeg" alt="Pista Green Kurti Set">
             <img class="ph alt" src="home/image/kurti-category back 1.png" alt="Pista Green Kurti Set">
@@ -248,9 +287,9 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p7" data-name="Bandhani Suit" data-price="1499" data-image="home/image/bandhani suit (1).jfif" data-category="Bandhani">
+        <div class="product-card" data-id="p7" data-name="Bandhani Suit" data-price="1499" data-image="home/image/bandhani suit (1).jpeg" data-category="bandhani">
           <div class="product-media">
-            <img class="ph main" src="home/image/bandhani suit (1).jfif" alt="Bandhani Suit">
+            <img class="ph main" src="home/image/bandhani suit (1).jpeg" alt="Bandhani Suit">
             <img class="ph alt" src="home/image/bandhani1 back.png" alt="Bandhani Suit back">
             <button class="product-quickadd">Quick add</button>
           </div>
@@ -265,9 +304,9 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p8" data-name="Cerulean Floral Kurti Set" data-price="899" data-image="home/image/ph-main4.jfif" data-category="floral">
+        <div class="product-card" data-id="p8" data-name="Cerulean Floral Kurti Set" data-price="899" data-image="home/image/ph-main4.jpeg" data-category="floral">
           <div class="product-media">
-            <img class="ph main" src="home/image/ph-main4.jfif" alt="Cerulean Floral Kurti Set">
+            <img class="ph main" src="home/image/ph-main4.jpeg" alt="Cerulean Floral Kurti Set">
             <img class="ph alt" src="home/image/ph-alt4.png" alt="Cerulean Floral Set Backview">
             <button class="product-quickadd">Quick add</button>
           </div>
@@ -282,9 +321,9 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p9" data-name="Sharara" data-price="899" data-image="home/image/sharara suit (1).jfif" data-category="Sharara">
+        <div class="product-card" data-id="p9" data-name="Sharara" data-price="899" data-image="home/image/sharara suit (10).jpeg" data-category="sharara">
           <div class="product-media">
-            <img class="ph main" src="home/image/sharara suit (1).jfif" alt="Sharara">
+            <img class="ph main" src="home/image/sharara suit (10).jpeg" alt="Sharara">
             <img class="ph alt" src="home/image/Sharara 1 back.png" alt="Sharara Backview">
             <button class="product-quickadd">Quick add</button>
           </div>
@@ -299,7 +338,7 @@
           </div>
         </div>
 
-        <div class="product-card" data-id="p10" data-name="Blue Floral Anarkali Set" data-price="1199" data-image="home/image/kurti-category (1).jpeg" data-category="Kurti">
+        <div class="product-card" data-id="p10" data-name="Blue Floral Anarkali Set" data-price="1199" data-image="home/image/kurti-category (9).jpeg" data-category="floral">
           <div class="product-media">
             <span class="product-tag">New</span>
             <img class="ph main" src="home/image/kurti-category (9).jpeg" alt="blue Floral Anarkali Set">
@@ -317,11 +356,11 @@
           </div>
         </div>
 
-         <div class="product-card" data-id="p11" data-name="Bandhani Suit" data-price="1199" data-image="home/image/kurti-category (1).jpeg" data-category="Bandhani Suit">
+         <div class="product-card" data-id="p11" data-name="Bandhani Suit" data-price="1499" data-image="home/image/bandhani suit (2).jpeg" data-category="bandhani">
           <div class="product-media">
             <span class="product-tag">New</span>
-            <img class="ph main" src="home/image/bandhani suit (2).jfif" alt="blue Floral Anarkali Set">
-            <img class="ph alt" src="home/image/kurti-category (9) 1.png" alt="blue Floral Anarkali Set Backview">
+            <img class="ph main" src="home/image/bandhani suit (2).jpeg" alt="Bandhani Suit">
+            <img class="ph alt" src="home/image/bandhani suit (2) back.jpeg" alt="Bandhani Suit backview">
             <button class="product-quickadd">Quick add</button>
           </div>
           <div class="product-info">
@@ -331,7 +370,24 @@
                 <i style="background:beige"></i><i style="background:lightcyan"></i><i style="background:lightpink"></i>
               </div>
             </div>
-            <div class="product-price"><span class="now">₹1199</span></div>
+            <div class="product-price"><span class="now">₹1499</span></div>
+          </div>
+        </div>
+
+        <div class="product-card" data-id="p12" data-name="Sharara" data-price="1999" data-image="home/image/sharara suit (5).jpeg" data-category="sharara">
+          <div class="product-media">
+            <img class="ph main" src="home/image/sharara suit (5).jpeg" alt="Sharara">
+            <img class="ph alt" src="home/image/sharara suit (5) back.jpeg" alt="Sharara backview">
+            <button class="product-quickadd">Quick add</button>
+          </div>
+          <div class="product-info">
+            <div>
+              <h3>Sharara</h3>
+              <div class="swatches">
+                <i style="background:beige"></i><i style="background:lightcyan"></i><i style="background:lightpink"></i>
+              </div>
+            </div>
+            <div class="product-price"><span class="now">₹1999</span></div>
           </div>
         </div>
 
@@ -370,7 +426,7 @@
       <div class="footer-col">
         <h4>Help</h4>
         <ul>
-          <li><a href="#">Size guide</a></li>
+          <li><a href="#" id="sizeGuideOpen">Size guide</a></li>
           <li><a href="#">Shipping &amp; returns</a></li>
           <li><a href="#">Track an order</a></li>
           <li><a href="#">FAQs</a></li>
@@ -401,4 +457,4 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 </body>
-</html>
+</html>   

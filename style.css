@@ -707,5 +707,64 @@ footer{ border-top:1px solid var(--line); padding-block: 56px 28px; }
 
 @media (max-width: 640px){
   .category-tabs{ gap: 8px; }
-  .category-tab{ padding: 9px 14px; font-size: 13px; }
+  .category-t
+  ab{ padding: 9px 14px; font-size: 13px; }
+}
+
+
+
+/* =====================================================================
+   SIZE GUIDE MODAL
+   Paste this whole block onto the END of your existing style.css,
+   after everything else you've already added.
+   Relies on --ink, --ivory, --paper, --line, --muted, --clay,
+   --font-display, --font-body, .icon-btn and .scrim already being
+   defined.
+===================================================================== */
+.modal{
+  position: fixed; z-index: 97;
+  top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.96);
+  width: min(600px, 92vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--ivory);
+  border-radius: 4px;
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,.45);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.modal.is-open{
+  opacity: 1; pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; background: var(--ivory);
+}
+.modal-head h3{ font-size: 19px; }
+
+.modal-body{ padding: 22px 24px 28px; }
+.modal-note{ font-size: 13.5px; color: var(--muted); margin-bottom: 18px; line-height: 1.6; }
+
+.size-table-wrap{ overflow-x: auto; margin-bottom: 18px; }
+.size-table{
+  width: 100%; border-collapse: collapse; font-size: 13.5px; white-space: nowrap;
+}
+.size-table th, .size-table td{
+  padding: 10px 14px; text-align: center; border: 1px solid var(--line);
+}
+.size-table th{
+  background: var(--paper); font-family: var(--font-body); font-weight: 600;
+}
+.size-table td:first-child, .size-table th:first-child{
+  font-weight: 600; background: var(--paper);
+}
+
+@media (max-width: 480px){
+  .modal{ width: 94vw; max-height: 90vh; }
+  .modal-body{ padding: 18px 16px 24px; }
+  .size-table th, .size-table td{ padding: 8px 10px; }
 }
