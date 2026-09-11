@@ -142,6 +142,57 @@
   </div>
 </div>
 
+<!-- ================= SHIPPING & RETURNS / CONTACT MODAL ================= -->
+<div class="scrim" id="returnsScrim"></div>
+<div class="modal" id="returnsModal" role="dialog" aria-modal="true" aria-labelledby="returnsTitle">
+  <div class="modal-head">
+    <h3 id="returnsTitle">Shipping &amp; Returns</h3>
+    <button class="icon-btn" id="returnsClose" aria-label="Close">✕</button>
+  </div>
+  <div class="modal-body">
+
+    <div id="returnsFormWrap">
+      <p class="modal-note">Not happy with your order, or have a shipping question? Tell us a bit more and we'll get back to you.</p>
+
+      <form id="returnsForm" novalidate>
+        <div class="form-field">
+          <label for="returnsEmail">Your email</label>
+          <input type="email" id="returnsEmail" placeholder="you@email.com" required>
+        </div>
+
+        <div class="form-field">
+          <label>What's going on? <span class="field-hint">(select all that apply)</span></label>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" name="reason" value="Wrong size"> Wrong size</label>
+            <label class="checkbox-item"><input type="checkbox" name="reason" value="Didn't like the fabric"> Didn't like the fabric</label>
+            <label class="checkbox-item"><input type="checkbox" name="reason" value="Item damaged"> Item arrived damaged</label>
+            <label class="checkbox-item"><input type="checkbox" name="reason" value="Wrong item received"> Wrong item received</label>
+            <label class="checkbox-item"><input type="checkbox" name="reason" value="Changed my mind"> Changed my mind</label>
+            <label class="checkbox-item"><input type="checkbox" name="reason" value="Shipping delay"> Shipping is delayed</label>
+            <label class="checkbox-item"><input type="checkbox" name="reason" value="Other"> Other</label>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="returnsMessage">Tell us more</label>
+          <textarea id="returnsMessage" rows="4" placeholder="A few details help us sort this out faster..."></textarea>
+        </div>
+
+        <p class="form-error" id="returnsError"></p>
+
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Submit</button>
+      </form>
+    </div>
+
+    <div id="returnsThanks" class="returns-thanks" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+      <h4>Thanks — we'll reach out soon</h4>
+      <p>We've got your message and will get back to you at the email you gave us, usually within 1–2 business days.</p>
+    </div>
+
+  </div>
+</div>
+
 <main id="top">
 
   <!-- ================= HERO ================= -->
@@ -395,7 +446,7 @@
         <h4>Help</h4>
         <ul>
           <li><a href="#" id="sizeGuideOpen">Size guide</a></li>
-          <li><a href="#">Shipping &amp; returns</a></li>
+          <li><a href="#" id="returnsOpen">Shipping &amp; returns</a></li>
           <li><a href="#">Track an order</a></li>
           <li><a href="#">FAQs</a></li>
         </ul>

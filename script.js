@@ -352,3 +352,84 @@
   }
 
 })();
+
+
+
+  /* =====================================================================
+     SHIPPING & RETURNS / CONTACT MODAL
+     Same open/close pattern as the Size Guide modal, plus a front-end-only
+     form submit. NOTE: this doesn't send anywhere yet — point the fetch()
+     below at your real backend/email service (Formspree, your own API,
+     etc.) when ready.
+  ===================================================================== */
+  var returnsOpenBtn  = document.getElementById('returnsOpen');
+  var returnsModal    = document.getElementById('returnsModal');
+  var returnsScrim    = document.getElementById('returnsScrim');
+  var returnsCloseBtn = document.getElementById('returnsClose');
+  var returnsForm     = document.getElementById('returnsForm');
+  var returnsEmail    = document.getElementById('returnsEmail');
+  var returnsError    = document.getElementById('returnsError');
+  var returnsFormWrap = document.getElementById('returnsFormWrap');
+  var returnsThanks   = document.getElementById('returnsThanks');
+
+  if(returnsOpenBtn && returnsModal && returnsScrim && returnsCloseBtn){
+    function openReturns(e){
+      if(e) e.preventDefault();
+      returnsModal.classList.add('is-open');
+      returnsScrim.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeReturns(){
+      returnsModal.classList.remove('is-open');
+      returnsScrim.classList.remove('is-visible');
+      document.body.style.overflow = '';
+      // reset back to the form view after the close animation finishes
+      window.setTimeout(function(){
+        returnsFormWrap.hidden = false;
+        returnsThanks.hidden = true;
+        returnsForm.reset();
+        returnsError.textContent = '';
+      }, 200);
+    }
+
+    returnsOpenBtn.addEventListener('click', openReturns);
+    returnsCloseBtn.addEventListener('click', closeReturns);
+    returnsScrim.addEventListener('click', closeReturns);
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && returnsModal.classList.contains('is-open')) closeReturns();
+    });
+
+    returnsForm.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      var email = returnsEmail.value.trim();
+      var isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      var checkedReasons = Array.prototype.slice.call(
+        returnsForm.querySelectorAll('input[name="reason"]:checked')
+      );
+
+      if(!isValidEmail){
+        returnsError.textContent = 'Please enter a valid email address.';
+        returnsEmail.focus();
+        return;
+      }
+      if(checkedReasons.length === 0){
+        returnsError.textContent = 'Please select at least one reason.';
+        return;
+      }
+      returnsError.textContent = '';
+
+      // Front-end-only demo — swap this for a real request, e.g.:
+      // fetch('/api/returns', { method:'POST', body: JSON.stringify(payload) });
+      var payload = {
+        email: email,
+        reasons: checkedReasons.map(function(cb){ return cb.value; }),
+        message: document.getElementById('returnsMessage').value.trim()
+      };
+      console.log('Returns/contact submission:', payload);
+
+      returnsFormWrap.hidden = true;
+      returnsThanks.hidden = false;
+    });
+  }

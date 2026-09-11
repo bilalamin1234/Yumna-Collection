@@ -34,3 +34,10 @@
   .category-rail{ grid-template-columns: 1fr 1fr; }
   .gallery-strip{ grid-template-columns: repeat(2,1fr); }
 }
+
+
+@media (max-width: 480px){
+  .modal{ width: 94vw; max-height: 90vh; }
+  .modal-body{ padding: 18px 16px 24px; }
+  .size-table th, .size-table td{ padding: 8px 10px; }
+}
