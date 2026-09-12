@@ -4,25 +4,29 @@
   /* ---------- Announcement bar dismiss ---------- */
   var announceBar = document.getElementById('announceBar');
   var announceClose = document.getElementById('announceClose');
-  announceClose.addEventListener('click', function(){
-    announceBar.style.display = 'none';
-  });
+  if(announceBar && announceClose){
+    announceClose.addEventListener('click', function(){
+      announceBar.style.display = 'none';
+    });
+  }
 
-  /* ---------- Sticky header shadow on scroll ---------- */
+  /* ---------- Sticky header shadow on scroll + back-to-top button ---------- */
   var header = document.getElementById('siteHeader');
   var toTopBtn = document.getElementById('toTop');
 
-  function onScroll(){
-    var scrolled = window.scrollY > 12;
-    header.classList.toggle('is-scrolled', scrolled);
-    toTopBtn.classList.toggle('is-visible', window.scrollY > 700);
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
+  if(header && toTopBtn){
+    var onScroll = function(){
+      var scrolled = window.scrollY > 12;
+      header.classList.toggle('is-scrolled', scrolled);
+      toTopBtn.classList.toggle('is-visible', window.scrollY > 700);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 
-  toTopBtn.addEventListener('click', function(){
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+    toTopBtn.addEventListener('click', function(){
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
 
   /* ---------- Mobile menu ---------- */
   var menuToggle = document.getElementById('menuToggle');
@@ -30,37 +34,37 @@
   var scrim = document.getElementById('scrim');
   var panelClose = document.getElementById('panelClose');
 
-  function openMenu(){
-    mobilePanel.classList.add('is-open');
-    scrim.classList.add('is-visible');
-    menuToggle.classList.add('is-open');
-    menuToggle.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeMenu(){
-    mobilePanel.classList.remove('is-open');
-    scrim.classList.remove('is-visible');
-    menuToggle.classList.remove('is-open');
-    menuToggle.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  }
-  menuToggle.addEventListener('click', function(){
-    mobilePanel.classList.contains('is-open') ? closeMenu() : openMenu();
-  });
-  panelClose.addEventListener('click', closeMenu);
-  scrim.addEventListener('click', closeMenu);
+  if(menuToggle && mobilePanel && scrim && panelClose){
+    var openMenu = function(){
+      mobilePanel.classList.add('is-open');
+      scrim.classList.add('is-visible');
+      menuToggle.classList.add('is-open');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    };
+    var closeMenu = function(){
+      mobilePanel.classList.remove('is-open');
+      scrim.classList.remove('is-visible');
+      menuToggle.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+    menuToggle.addEventListener('click', function(){
+      mobilePanel.classList.contains('is-open') ? closeMenu() : openMenu();
+    });
+    panelClose.addEventListener('click', closeMenu);
+    scrim.addEventListener('click', closeMenu);
 
-  mobilePanel.querySelectorAll('a').forEach(function(link){
-    link.addEventListener('click', closeMenu);
-  });
+    mobilePanel.querySelectorAll('a').forEach(function(link){
+      link.addEventListener('click', closeMenu);
+    });
+  }
 
+  /* ---------- Newsletter (index.html / category.html only) ---------- */
   var form = document.getElementById('newsletterForm');
   var emailInput = document.getElementById('newsletterEmail');
   var note = document.getElementById('newsletterNote');
 
-  // Guarded: category.html has no newsletter form. Without this check,
-  // the missing element would throw here and silently stop every line
-  // of script.js below it from running (search, cart, size guide, etc.)
   if(form && emailInput && note){
     var defaultNote = note.textContent;
 
@@ -87,9 +91,13 @@
     });
   }
 
+  /* ---------- Footer year ---------- */
   var yearEl = document.getElementById('year');
   if(yearEl) yearEl.textContent = new Date().getFullYear();
 
+  /* =====================================================================
+     SEARCH OVERLAY (index.html / category.html only)
+  ===================================================================== */
   var searchOpenBtn  = document.getElementById('searchOpen');
   var searchOverlay  = document.getElementById('searchOverlay');
   var searchCloseBtn = document.getElementById('searchClose');
@@ -108,74 +116,79 @@
     };
   });
 
-  function openSearch(){
-    searchOverlay.classList.add('is-open');
-    searchOpenBtn.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-    window.setTimeout(function(){ searchInput.focus(); }, 60);
-  }
-  function closeSearch(){
-    searchOverlay.classList.remove('is-open');
-    searchOpenBtn.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-    searchInput.value = '';
-    renderSearchResults('');
-  }
-  function renderSearchResults(rawQuery){
-    var query = rawQuery.trim().toLowerCase();
-    searchResults.innerHTML = '';
+  var closeSearch = function(){}; // no-op default; replaced below if the search UI exists on this page
 
-    if(!query){
-      searchHint.style.display = 'block';
-      searchHint.textContent = 'Start typing to search across all products.';
-      return;
-    }
-    searchHint.style.display = 'none';
+  if(searchOpenBtn && searchOverlay && searchCloseBtn && searchInput && searchResults && searchHint){
+    var renderSearchResults = function(rawQuery){
+      var query = rawQuery.trim().toLowerCase();
+      searchResults.innerHTML = '';
 
-    var matches = products.filter(function(p){
-      return p.name.toLowerCase().indexOf(query) !== -1;
-    });
+      if(!query){
+        searchHint.style.display = 'block';
+        searchHint.textContent = 'Start typing to search across all products.';
+        return;
+      }
+      searchHint.style.display = 'none';
 
-    if(matches.length === 0){
-      var none = document.createElement('p');
-      none.className = 'search-no-results';
-      none.textContent = 'No products match "' + rawQuery.trim() + '".';
-      searchResults.appendChild(none);
-      return;
-    }
-
-    matches.forEach(function(p){
-      var row = document.createElement('button');
-      row.type = 'button';
-      row.className = 'search-result';
-      row.innerHTML =
-        '<img src="' + p.image + '" alt="">' +
-        '<span class="sr-info"><h4>' + p.name + '</h4></span>' +
-        '<span class="sr-price">\u20B9' + p.price + '</span>';
-      row.addEventListener('click', function(){
-        closeSearch();
-        p.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        p.el.style.transition = 'box-shadow .3s ease';
-        p.el.style.boxShadow = '0 0 0 3px var(--clay)';
-        window.setTimeout(function(){ p.el.style.boxShadow = ''; }, 1400);
+      var matches = products.filter(function(p){
+        return p.name.toLowerCase().indexOf(query) !== -1;
       });
-      searchResults.appendChild(row);
+
+      if(matches.length === 0){
+        var none = document.createElement('p');
+        none.className = 'search-no-results';
+        none.textContent = 'No products match "' + rawQuery.trim() + '".';
+        searchResults.appendChild(none);
+        return;
+      }
+
+      matches.forEach(function(p){
+        var row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'search-result';
+        row.innerHTML =
+          '<img src="' + p.image + '" alt="">' +
+          '<span class="sr-info"><h4>' + p.name + '</h4></span>' +
+          '<span class="sr-price">\u20B9' + p.price + '</span>';
+        row.addEventListener('click', function(){
+          closeSearch();
+          p.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          p.el.style.transition = 'box-shadow .3s ease';
+          p.el.style.boxShadow = '0 0 0 3px var(--clay)';
+          window.setTimeout(function(){ p.el.style.boxShadow = ''; }, 1400);
+        });
+        searchResults.appendChild(row);
+      });
+    };
+
+    var openSearch = function(){
+      searchOverlay.classList.add('is-open');
+      searchOpenBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      window.setTimeout(function(){ searchInput.focus(); }, 60);
+    };
+    closeSearch = function(){
+      searchOverlay.classList.remove('is-open');
+      searchOpenBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      searchInput.value = '';
+      renderSearchResults('');
+    };
+
+    searchOpenBtn.addEventListener('click', openSearch);
+    searchCloseBtn.addEventListener('click', closeSearch);
+    searchInput.addEventListener('input', function(){
+      renderSearchResults(searchInput.value);
     });
   }
 
-  searchOpenBtn.addEventListener('click', openSearch);
-  searchCloseBtn.addEventListener('click', closeSearch);
-  searchInput.addEventListener('input', function(){
-    renderSearchResults(searchInput.value);
-  });
-
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape'){
-      if(searchOverlay.classList.contains('is-open')) closeSearch();
-      if(cartDrawer.classList.contains('is-open')) closeCart();
-    }
-  });
-
+  /* =====================================================================
+     CART DRAWER (index.html / category.html only)
+     Client-side cart stored in localStorage under "yc_cart", so it
+     persists between visits on the same device/browser. There is no
+     server or payment processing here — wire "Checkout" to your real
+     flow (Stripe Checkout, a WhatsApp order link, your own backend, etc.).
+  ===================================================================== */
   var CART_KEY = 'yc_cart';
   var cartDrawer      = document.getElementById('cartDrawer');
   var cartScrim       = document.getElementById('cartScrim');
@@ -188,126 +201,144 @@
   var bagCountEl      = document.getElementById('bagCount');
   var cartCheckoutBtn = document.getElementById('cartCheckout');
 
-  function loadCart(){
-    try{
-      var raw = localStorage.getItem(CART_KEY);
-      return raw ? JSON.parse(raw) : [];
-    }catch(e){
-      return [];
-    }
-  }
-  function saveCart(){
-    try{ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }catch(e){}
-  }
+  var cart = [];
+  var closeCart = function(){}; // no-op default; replaced below if the cart UI exists on this page
 
-  var cart = loadCart();
+  if(cartDrawer && cartScrim && cartOpenBtn && cartCloseBtn && cartItemsEl && cartEmptyEl && cartFooterEl && cartSubtotalEl && bagCountEl && cartCheckoutBtn){
 
-  function openCart(){
-    cartDrawer.classList.add('is-open');
-    cartScrim.classList.add('is-visible');
-    cartOpenBtn.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeCart(){
-    cartDrawer.classList.remove('is-open');
-    cartScrim.classList.remove('is-visible');
-    cartOpenBtn.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  }
+    var loadCart = function(){
+      try{
+        var raw = localStorage.getItem(CART_KEY);
+        return raw ? JSON.parse(raw) : [];
+      }catch(e){
+        return [];
+      }
+    };
+    var saveCart = function(){
+      try{ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }catch(e){}
+    };
 
-  function addToCart(product){
-    var existing = cart.filter(function(item){ return item.id === product.id; })[0];
-    if(existing){
-      existing.qty += 1;
-    }else{
-      cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, qty: 1 });
-    }
-    saveCart();
-    renderCart();
-    openCart();
-  }
-  function changeQty(id, delta){
-    var item = cart.filter(function(i){ return i.id === id; })[0];
-    if(!item) return;
-    item.qty += delta;
-    if(item.qty <= 0){
+    cart = loadCart();
+
+    var openCart = function(){
+      cartDrawer.classList.add('is-open');
+      cartScrim.classList.add('is-visible');
+      cartOpenBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    };
+    closeCart = function(){
+      cartDrawer.classList.remove('is-open');
+      cartScrim.classList.remove('is-visible');
+      cartOpenBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+
+    var renderCart; // declared here so addToCart/changeQty/removeItem can reference it before definition
+
+    var addToCart = function(product){
+      var existing = cart.filter(function(item){ return item.id === product.id; })[0];
+      if(existing){
+        existing.qty += 1;
+      }else{
+        cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, qty: 1 });
+      }
+      saveCart();
+      renderCart();
+      openCart();
+    };
+    var changeQty = function(id, delta){
+      var item = cart.filter(function(i){ return i.id === id; })[0];
+      if(!item) return;
+      item.qty += delta;
+      if(item.qty <= 0){
+        cart = cart.filter(function(i){ return i.id !== id; });
+      }
+      saveCart();
+      renderCart();
+    };
+    var removeItem = function(id){
       cart = cart.filter(function(i){ return i.id !== id; });
-    }
-    saveCart();
-    renderCart();
-  }
-  function removeItem(id){
-    cart = cart.filter(function(i){ return i.id !== id; });
-    saveCart();
-    renderCart();
-  }
+      saveCart();
+      renderCart();
+    };
 
-  function renderCart(){
-    cartItemsEl.innerHTML = '';
-    var totalQty = cart.reduce(function(sum, i){ return sum + i.qty; }, 0);
-    var subtotal = cart.reduce(function(sum, i){ return sum + (i.qty * i.price); }, 0);
+    renderCart = function(){
+      cartItemsEl.innerHTML = '';
+      var totalQty = cart.reduce(function(sum, i){ return sum + i.qty; }, 0);
+      var subtotal = cart.reduce(function(sum, i){ return sum + (i.qty * i.price); }, 0);
 
-    var hasItems = cart.length > 0;
-    cartEmptyEl.style.display = hasItems ? 'none' : 'flex';
-    cartFooterEl.style.display = hasItems ? 'block' : 'none';
-    cartItemsEl.style.display = hasItems ? 'flex' : 'none';
+      var hasItems = cart.length > 0;
+      cartEmptyEl.style.display = hasItems ? 'none' : 'flex';
+      cartFooterEl.style.display = hasItems ? 'block' : 'none';
+      cartItemsEl.style.display = hasItems ? 'flex' : 'none';
 
-    cart.forEach(function(item){
-      var line = document.createElement('div');
-      line.className = 'cart-line';
-      line.innerHTML =
-        '<img src="' + item.image + '" alt="">' +
-        '<div class="cart-line-info">' +
-          '<h4>' + item.name + '</h4>' +
-          '<span class="cart-line-price">\u20B9' + item.price + '</span>' +
-          '<div class="cart-line-controls">' +
-            '<div class="qty-stepper">' +
-              '<button type="button" data-action="dec" aria-label="Decrease quantity">\u2212</button>' +
-              '<span>' + item.qty + '</span>' +
-              '<button type="button" data-action="inc" aria-label="Increase quantity">+</button>' +
+      cart.forEach(function(item){
+        var line = document.createElement('div');
+        line.className = 'cart-line';
+        line.innerHTML =
+          '<img src="' + item.image + '" alt="">' +
+          '<div class="cart-line-info">' +
+            '<h4>' + item.name + '</h4>' +
+            '<span class="cart-line-price">\u20B9' + item.price + '</span>' +
+            '<div class="cart-line-controls">' +
+              '<div class="qty-stepper">' +
+                '<button type="button" data-action="dec" aria-label="Decrease quantity">\u2212</button>' +
+                '<span>' + item.qty + '</span>' +
+                '<button type="button" data-action="inc" aria-label="Increase quantity">+</button>' +
+              '</div>' +
+              '<button type="button" class="cart-line-remove">Remove</button>' +
             '</div>' +
-            '<button type="button" class="cart-line-remove">Remove</button>' +
-          '</div>' +
-        '</div>';
-      line.querySelector('[data-action="dec"]').addEventListener('click', function(){ changeQty(item.id, -1); });
-      line.querySelector('[data-action="inc"]').addEventListener('click', function(){ changeQty(item.id, 1); });
-      line.querySelector('.cart-line-remove').addEventListener('click', function(){ removeItem(item.id); });
-      cartItemsEl.appendChild(line);
-    });
+          '</div>';
+        line.querySelector('[data-action="dec"]').addEventListener('click', function(){ changeQty(item.id, -1); });
+        line.querySelector('[data-action="inc"]').addEventListener('click', function(){ changeQty(item.id, 1); });
+        line.querySelector('.cart-line-remove').addEventListener('click', function(){ removeItem(item.id); });
+        cartItemsEl.appendChild(line);
+      });
 
-    cartSubtotalEl.textContent = '\u20B9' + subtotal;
-    bagCountEl.textContent = totalQty;
-    bagCountEl.hidden = totalQty === 0;
-  }
+      cartSubtotalEl.textContent = '\u20B9' + subtotal;
+      bagCountEl.textContent = totalQty;
+      bagCountEl.hidden = totalQty === 0;
+    };
 
-  cartOpenBtn.addEventListener('click', openCart);
-  cartCloseBtn.addEventListener('click', closeCart);
-  cartScrim.addEventListener('click', closeCart);
+    cartOpenBtn.addEventListener('click', openCart);
+    cartCloseBtn.addEventListener('click', closeCart);
+    cartScrim.addEventListener('click', closeCart);
 
-  document.querySelectorAll('.product-quickadd').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var card = btn.closest('.product-card');
-      if(!card) return;
-      addToCart({
-        id: card.getAttribute('data-id'),
-        name: card.getAttribute('data-name'),
-        price: parseFloat(card.getAttribute('data-price')) || 0,
-        image: card.getAttribute('data-image')
+    document.querySelectorAll('.product-quickadd').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var card = btn.closest('.product-card');
+        if(!card) return;
+        addToCart({
+          id: card.getAttribute('data-id'),
+          name: card.getAttribute('data-name'),
+          price: parseFloat(card.getAttribute('data-price')) || 0,
+          image: card.getAttribute('data-image')
+        });
       });
     });
+
+    cartCheckoutBtn.addEventListener('click', function(){
+      window.alert('Checkout isn\'t connected yet. This button is where your payment or order flow goes.');
+    });
+
+    renderCart();
+  }
+
+  /* ---------- Escape key closes whichever overlay is currently open ---------- */
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Escape') return;
+    if(searchOverlay && searchOverlay.classList.contains('is-open')) closeSearch();
+    if(cartDrawer && cartDrawer.classList.contains('is-open')) closeCart();
   });
 
-  cartCheckoutBtn.addEventListener('click', function(){
-    window.alert('Checkout isn\'t connected yet. This button is where your payment or order flow goes.');
-  });
-
-  renderCart();
-
+  /* =====================================================================
+     SIZE GUIDE MODAL (index.html / category.html only)
+  ===================================================================== */
   var sizeGuideOpenBtn  = document.getElementById('sizeGuideOpen');
   var sizeGuideModal    = document.getElementById('sizeGuideModal');
   var sizeGuideScrim    = document.getElementById('sizeGuideScrim');
   var sizeGuideCloseBtn = document.getElementById('sizeGuideClose');
-  var openSizeGuideRef; // exposed below so the FAQ modal can optionally jump here
+  var openSizeGuideRef; // exposed so the FAQ modal can optionally jump here
 
   if(sizeGuideOpenBtn && sizeGuideModal && sizeGuideScrim && sizeGuideCloseBtn){
     function openSizeGuide(e){
@@ -535,6 +566,127 @@
         openSizeGuideRef();
       });
     }
+  }
+
+  /* =====================================================================
+     AUTH TABS + FORMS (login.html only)
+     Switches between the Sign In / Create Account forms and validates
+     both client-side. There is no backend here — a successful submit
+     just confirms the input passed validation and stops there. Wire
+     these to your real authentication API/service when ready.
+  ===================================================================== */
+  var tabSignIn = document.getElementById('tabSignIn');
+  var tabSignUp = document.getElementById('tabSignUp');
+  var signInForm = document.getElementById('signInForm');
+  var signUpForm = document.getElementById('signUpForm');
+  var authFoot = document.getElementById('authFoot');
+
+  if(tabSignIn && tabSignUp && signInForm && signUpForm){
+
+    function bindSwitchLink(){
+      var link = document.getElementById('switchToSignUp');
+      if(!link) return;
+      link.addEventListener('click', function(e){
+        e.preventDefault();
+        tabSignIn.classList.contains('is-active') ? showSignUp() : showSignIn();
+      });
+    }
+
+    function showSignIn(){
+      tabSignIn.classList.add('is-active');
+      tabSignIn.setAttribute('aria-selected', 'true');
+      tabSignUp.classList.remove('is-active');
+      tabSignUp.setAttribute('aria-selected', 'false');
+      signInForm.classList.add('is-active');
+      signUpForm.classList.remove('is-active');
+      if(authFoot){
+        authFoot.innerHTML = 'New here? <a href="#" id="switchToSignUp">Create an account</a>';
+        bindSwitchLink();
+      }
+    }
+    function showSignUp(){
+      tabSignUp.classList.add('is-active');
+      tabSignUp.setAttribute('aria-selected', 'true');
+      tabSignIn.classList.remove('is-active');
+      tabSignIn.setAttribute('aria-selected', 'false');
+      signUpForm.classList.add('is-active');
+      signInForm.classList.remove('is-active');
+      if(authFoot){
+        authFoot.innerHTML = 'Already have an account? <a href="#" id="switchToSignUp">Sign in</a>';
+        bindSwitchLink();
+      }
+    }
+
+    tabSignIn.addEventListener('click', showSignIn);
+    tabSignUp.addEventListener('click', showSignUp);
+    bindSwitchLink();
+
+    var signInEmail    = document.getElementById('signInEmail');
+    var signInPassword = document.getElementById('signInPassword');
+    var signInError    = document.getElementById('signInError');
+
+    signInForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var email = signInEmail.value.trim();
+      var isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if(!isValidEmail){
+        signInError.textContent = 'Please enter a valid email address.';
+        signInEmail.focus();
+        return;
+      }
+      if(!signInPassword.value){
+        signInError.textContent = 'Please enter your password.';
+        signInPassword.focus();
+        return;
+      }
+      signInError.textContent = '';
+
+      // Front-end-only demo — swap this for a real request, e.g.:
+      // fetch('/api/login', { method:'POST', body: JSON.stringify({ email, password }) });
+      console.log('Sign-in submitted:', { email: email });
+      window.alert('Sign in isn\'t connected to a backend yet — this is where your login request would be sent.');
+    });
+
+    var signUpName     = document.getElementById('signUpName');
+    var signUpEmail    = document.getElementById('signUpEmail');
+    var signUpPassword = document.getElementById('signUpPassword');
+    var signUpConfirm  = document.getElementById('signUpConfirm');
+    var signUpError    = document.getElementById('signUpError');
+
+    signUpForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var name = signUpName.value.trim();
+      var email = signUpEmail.value.trim();
+      var isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if(!name){
+        signUpError.textContent = 'Please enter your full name.';
+        signUpName.focus();
+        return;
+      }
+      if(!isValidEmail){
+        signUpError.textContent = 'Please enter a valid email address.';
+        signUpEmail.focus();
+        return;
+      }
+      if(signUpPassword.value.length < 8){
+        signUpError.textContent = 'Password must be at least 8 characters.';
+        signUpPassword.focus();
+        return;
+      }
+      if(signUpPassword.value !== signUpConfirm.value){
+        signUpError.textContent = 'Passwords do not match.';
+        signUpConfirm.focus();
+        return;
+      }
+      signUpError.textContent = '';
+
+      // Front-end-only demo — swap this for a real request, e.g.:
+      // fetch('/api/signup', { method:'POST', body: JSON.stringify({ name, email, password }) });
+      console.log('Sign-up submitted:', { name: name, email: email });
+      window.alert('Account creation isn\'t connected to a backend yet — this is where your sign-up request would be sent.');
+    });
   }
 
 })();

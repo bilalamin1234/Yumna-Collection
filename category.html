@@ -6,8 +6,9 @@
     <title>Shop by Category — Yumna Collection</title>
     <meta name="description" content="Browse Yumna Collection by category — Kurti's Set, Bandhani Suit, Floral, and Sharara.">
     <link rel="stylesheet" href="style.css">
+    <!-- Category filtering lives inside script.js (second block) — there is
+         no separate categories.js file, so it is not loaded here anymore. -->
     <script src="script.js" defer></script>
-    <script src="categories.js" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -268,7 +269,7 @@
           Do you offer Cash on Delivery?
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-answer"><p>REPLACE with your actual Cash on Delivery policy.</p></div>
+        <div class="faq-answer"><p>Yes — Cash on Delivery is available on most pin codes across India. You'll see the option at checkout if it's available for your address; a small COD handling fee may apply.</p></div>
       </div>
 
       <div class="faq-item">
@@ -284,7 +285,7 @@
           Can I change or cancel my order?
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
         </button>
-        <div class="faq-answer"><p>REPLACE with your actual order-change/cancellation policy — e.g. contact us within X hours of ordering.</p></div>
+        <div class="faq-answer"><p>Yes — contact us within 12 hours of placing your order and we'll do our best to update the size, address, or cancel it before it ships.</p></div>
       </div>
 
     </div>
@@ -585,6 +586,8 @@
         <h4>Company</h4>
         <ul>
           <li><a href="index.html#story">Our story</a></li>
+          <!-- NOTE: no "Materials" or "Stores" section/page exists yet — still
+               "#" on purpose. Point them at a real page/section once you have one. -->
           <li><a href="#">Materials</a></li>
           <li><a href="#">Stores</a></li>
           <li><a href="index.html#contact">Contact</a></li>
