@@ -50,52 +50,46 @@
   panelClose.addEventListener('click', closeMenu);
   scrim.addEventListener('click', closeMenu);
 
-  // Close mobile menu when a nav link is tapped
   mobilePanel.querySelectorAll('a').forEach(function(link){
     link.addEventListener('click', closeMenu);
   });
 
-  /* ---------- Newsletter form validation ---------- */
   var form = document.getElementById('newsletterForm');
   var emailInput = document.getElementById('newsletterEmail');
   var note = document.getElementById('newsletterNote');
-  var defaultNote = note.textContent;
 
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var value = emailInput.value.trim();
-    var isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  // Guarded: category.html has no newsletter form. Without this check,
+  // the missing element would throw here and silently stop every line
+  // of script.js below it from running (search, cart, size guide, etc.)
+  if(form && emailInput && note){
+    var defaultNote = note.textContent;
 
-    if(!isValid){
-      note.textContent = 'Please enter a valid email address.';
-      note.classList.remove('success');
-      emailInput.focus();
-      return;
-    }
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var value = emailInput.value.trim();
+      var isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-    // NOTE: this is a front-end-only demo. To actually collect emails,
-    // point this fetch() at your own signup endpoint (Mailchimp,
-    // Klaviyo, your own backend, etc.) or swap in that provider's form.
-    note.textContent = 'Thanks — check your inbox to confirm your subscription.';
-    note.classList.add('success');
-    form.reset();
+      if(!isValid){
+        note.textContent = 'Please enter a valid email address.';
+        note.classList.remove('success');
+        emailInput.focus();
+        return;
+      }
 
-    setTimeout(function(){
-      note.textContent = defaultNote;
-      note.classList.remove('success');
-    }, 6000);
-  });
+      note.textContent = 'Thanks — check your inbox to confirm your subscription.';
+      note.classList.add('success');
+      form.reset();
 
-  /* ---------- Footer year ---------- */
-  document.getElementById('year').textContent = new Date().getFullYear();
+      setTimeout(function(){
+        note.textContent = defaultNote;
+        note.classList.remove('success');
+      }, 6000);
+    });
+  }
 
-  /* =====================================================================
-     SEARCH OVERLAY
-     Filters the products already present in the page — reads each
-     .product-card's data-id / data-name / data-price / data-image
-     attributes, so it needs no backend and no separate product list
-     to maintain. Add a product to the page and it's searchable.
-  ===================================================================== */
+  var yearEl = document.getElementById('year');
+  if(yearEl) yearEl.textContent = new Date().getFullYear();
+
   var searchOpenBtn  = document.getElementById('searchOpen');
   var searchOverlay  = document.getElementById('searchOverlay');
   var searchCloseBtn = document.getElementById('searchClose');
@@ -182,14 +176,6 @@
     }
   });
 
-  /* =====================================================================
-     CART DRAWER
-     Front-end-only cart: items live in localStorage under "yc_cart" so
-     they survive a page reload on the same browser. There is no server
-     and no payment processing — the "Checkout" button below is a stub;
-     wire it to your real checkout (Stripe Checkout, a WhatsApp order-
-     message link built from `cart`, your own backend, etc.) when ready.
-  ===================================================================== */
   var CART_KEY = 'yc_cart';
   var cartDrawer      = document.getElementById('cartDrawer');
   var cartScrim       = document.getElementById('cartScrim');
@@ -211,7 +197,7 @@
     }
   }
   function saveCart(){
-    try{ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }catch(e){ /* storage unavailable — cart just won't persist */ }
+    try{ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }catch(e){}
   }
 
   var cart = loadCart();
@@ -312,22 +298,16 @@
   });
 
   cartCheckoutBtn.addEventListener('click', function(){
-    // Stub — replace with your real checkout flow.
     window.alert('Checkout isn\'t connected yet. This button is where your payment or order flow goes.');
   });
 
   renderCart();
 
-  /* =====================================================================
-     SIZE GUIDE MODAL
-     A simple popup showing the size chart table already in the HTML.
-     Guarded with the `if` below so this does nothing on any page that
-     doesn't have the modal markup — safe to include everywhere.
-  ===================================================================== */
   var sizeGuideOpenBtn  = document.getElementById('sizeGuideOpen');
   var sizeGuideModal    = document.getElementById('sizeGuideModal');
   var sizeGuideScrim    = document.getElementById('sizeGuideScrim');
   var sizeGuideCloseBtn = document.getElementById('sizeGuideClose');
+  var openSizeGuideRef; // exposed below so the FAQ modal can optionally jump here
 
   if(sizeGuideOpenBtn && sizeGuideModal && sizeGuideScrim && sizeGuideCloseBtn){
     function openSizeGuide(e){
@@ -341,6 +321,7 @@
       sizeGuideScrim.classList.remove('is-visible');
       document.body.style.overflow = '';
     }
+    openSizeGuideRef = openSizeGuide; // strict mode scopes the function above to this block, so expose it via a variable declared outside
 
     sizeGuideOpenBtn.addEventListener('click', openSizeGuide);
     sizeGuideCloseBtn.addEventListener('click', closeSizeGuide);
@@ -351,16 +332,13 @@
     });
   }
 
-})();
-
-
-
   /* =====================================================================
      SHIPPING & RETURNS / CONTACT MODAL
-     Same open/close pattern as the Size Guide modal, plus a front-end-only
-     form submit. NOTE: this doesn't send anywhere yet — point the fetch()
-     below at your real backend/email service (Formspree, your own API,
-     etc.) when ready.
+     Same open/close pattern as the size guide, plus a front-end-only form
+     submit. Nothing is actually sent anywhere yet — the submission is
+     logged to the console so you can see what would be sent. Point it at
+     a real backend or form service (Formspree, your own API, etc.) when
+     you're ready to receive these for real.
   ===================================================================== */
   var returnsOpenBtn  = document.getElementById('returnsOpen');
   var returnsModal    = document.getElementById('returnsModal');
@@ -372,7 +350,7 @@
   var returnsFormWrap = document.getElementById('returnsFormWrap');
   var returnsThanks   = document.getElementById('returnsThanks');
 
-  if(returnsOpenBtn && returnsModal && returnsScrim && returnsCloseBtn){
+  if(returnsOpenBtn && returnsModal && returnsScrim && returnsCloseBtn && returnsForm){
     function openReturns(e){
       if(e) e.preventDefault();
       returnsModal.classList.add('is-open');
@@ -383,7 +361,7 @@
       returnsModal.classList.remove('is-open');
       returnsScrim.classList.remove('is-visible');
       document.body.style.overflow = '';
-      // reset back to the form view after the close animation finishes
+      // Reset back to the form view after the close animation finishes
       window.setTimeout(function(){
         returnsFormWrap.hidden = false;
         returnsThanks.hidden = true;
@@ -433,3 +411,205 @@
       returnsThanks.hidden = false;
     });
   }
+
+  /* =====================================================================
+     TRACK ORDER MODAL
+     Front-end-only demo: there is no backend here to actually look up an
+     order, so this validates the input and shows an honest message rather
+     than fabricating a fake shipping status. Wire the submit handler
+     below to your real order/shipping platform when ready.
+  ===================================================================== */
+  var trackOpenBtn  = document.getElementById('trackOpen');
+  var trackModal    = document.getElementById('trackModal');
+  var trackScrim    = document.getElementById('trackScrim');
+  var trackCloseBtn = document.getElementById('trackClose');
+  var trackForm     = document.getElementById('trackForm');
+  var trackOrderId  = document.getElementById('trackOrderId');
+  var trackEmail    = document.getElementById('trackEmail');
+  var trackError    = document.getElementById('trackError');
+  var trackFormWrap = document.getElementById('trackFormWrap');
+  var trackThanks   = document.getElementById('trackThanks');
+
+  if(trackOpenBtn && trackModal && trackScrim && trackCloseBtn && trackForm){
+    function openTrack(e){
+      if(e) e.preventDefault();
+      trackModal.classList.add('is-open');
+      trackScrim.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeTrack(){
+      trackModal.classList.remove('is-open');
+      trackScrim.classList.remove('is-visible');
+      document.body.style.overflow = '';
+      window.setTimeout(function(){
+        trackFormWrap.hidden = false;
+        trackThanks.hidden = true;
+        trackForm.reset();
+        trackError.textContent = '';
+      }, 200);
+    }
+
+    trackOpenBtn.addEventListener('click', openTrack);
+    trackCloseBtn.addEventListener('click', closeTrack);
+    trackScrim.addEventListener('click', closeTrack);
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && trackModal.classList.contains('is-open')) closeTrack();
+    });
+
+    trackForm.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      var orderId = trackOrderId.value.trim();
+      var email = trackEmail.value.trim();
+      var isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      if(!orderId){
+        trackError.textContent = 'Please enter your order number.';
+        trackOrderId.focus();
+        return;
+      }
+      if(!isValidEmail){
+        trackError.textContent = 'Please enter a valid email address.';
+        trackEmail.focus();
+        return;
+      }
+      trackError.textContent = '';
+
+      // Front-end-only demo — swap this for a real lookup, e.g.:
+      // fetch('/api/orders/' + orderId + '?email=' + email)
+      console.log('Track-order lookup requested:', { orderId: orderId, email: email });
+
+      trackFormWrap.hidden = true;
+      trackThanks.hidden = false;
+    });
+  }
+
+  /* =====================================================================
+     FAQ MODAL
+     A simple accordion — each question toggles its own answer
+     independently. No dependency on the other modals except an optional
+     link from a FAQ answer into the Size Guide modal, if both exist.
+  ===================================================================== */
+  var faqOpenBtn  = document.getElementById('faqOpen');
+  var faqModal    = document.getElementById('faqModal');
+  var faqScrim    = document.getElementById('faqScrim');
+  var faqCloseBtn = document.getElementById('faqClose');
+
+  if(faqOpenBtn && faqModal && faqScrim && faqCloseBtn){
+    function openFaq(e){
+      if(e) e.preventDefault();
+      faqModal.classList.add('is-open');
+      faqScrim.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeFaq(){
+      faqModal.classList.remove('is-open');
+      faqScrim.classList.remove('is-visible');
+      document.body.style.overflow = '';
+    }
+
+    faqOpenBtn.addEventListener('click', openFaq);
+    faqCloseBtn.addEventListener('click', closeFaq);
+    faqScrim.addEventListener('click', closeFaq);
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape' && faqModal.classList.contains('is-open')) closeFaq();
+    });
+
+    document.querySelectorAll('.faq-item').forEach(function(item){
+      var question = item.querySelector('.faq-question');
+      if(!question) return;
+      question.addEventListener('click', function(){
+        item.classList.toggle('is-open');
+      });
+    });
+
+    // Optional: "Check the Size Guide" link inside the FAQ jumps straight
+    // to that modal, if it exists on this page.
+    var faqSizeGuideLink = document.getElementById('faqSizeGuideLink');
+    if(faqSizeGuideLink && typeof openSizeGuideRef === 'function'){
+      faqSizeGuideLink.addEventListener('click', function(e){
+        e.preventDefault();
+        closeFaq();
+        openSizeGuideRef();
+      });
+    }
+  }
+
+})();
+
+(function(){
+  "use strict";
+
+  /* =====================================================================
+     CATEGORY FILTERING (category.html only)
+     Reads ?cat= from the URL on load, filters the .product-card elements
+     already on this page by their data-category attribute, and keeps the
+     URL in sync as tabs are clicked (so the page is linkable/shareable
+     and the browser back button works) — all without a page reload.
+  ===================================================================== */
+
+  var CATEGORY_LABELS = {
+    all: 'All Categories',
+    kurti: "Kurti's Set",
+    bandhani: 'Bandhani Suit',
+    floral: 'Floral',
+    sharara: 'Sharara'
+  };
+
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.product-card'));
+  var tabs  = Array.prototype.slice.call(document.querySelectorAll('.category-tab'));
+  var titleEl = document.getElementById('categoryTitle');
+  var emptyEl = document.getElementById('categoryEmpty');
+
+  if(cards.length === 0 || tabs.length === 0) return; // safety net if markup is missing
+
+  function getCategoryFromURL(){
+    var params = new URLSearchParams(window.location.search);
+    var cat = params.get('cat');
+    return CATEGORY_LABELS.hasOwnProperty(cat) ? cat : 'all';
+  }
+
+  function applyCategory(cat){
+    var visibleCount = 0;
+    cards.forEach(function(card){
+      var matches = (cat === 'all') || (card.getAttribute('data-category') === cat);
+      card.style.display = matches ? '' : 'none';
+      if(matches) visibleCount += 1;
+    });
+
+    tabs.forEach(function(tab){
+      tab.classList.toggle('is-active', tab.getAttribute('data-cat') === cat);
+    });
+
+    if(titleEl) titleEl.textContent = CATEGORY_LABELS[cat] || 'All Categories';
+    if(emptyEl) emptyEl.hidden = visibleCount > 0;
+
+    var url = new URL(window.location.href);
+    if(cat === 'all'){
+      url.searchParams.delete('cat');
+    }else{
+      url.searchParams.set('cat', cat);
+    }
+    window.history.replaceState({}, '', url);
+  }
+
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(e){
+      // Filter instantly without a page reload. The anchor's href is left
+      // in place on purpose — if JavaScript is ever unavailable, clicking
+      // still works as a normal link (category.html reads ?cat= on load).
+      e.preventDefault();
+      applyCategory(tab.getAttribute('data-cat'));
+    });
+  });
+
+  // Support the browser back/forward buttons
+  window.addEventListener('popstate', function(){
+    applyCategory(getCategoryFromURL());
+  });
+
+  applyCategory(getCategoryFromURL());
+
+})();

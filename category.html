@@ -6,7 +6,6 @@
     <title>Shop by Category — Yumna Collection</title>
     <meta name="description" content="Browse Yumna Collection by category — Kurti's Set, Bandhani Suit, Floral, and Sharara.">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="responsive.css">
     <script src="script.js" defer></script>
     <script src="categories.js" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -191,6 +190,104 @@
       <p>We've got your message and will get back to you at the email you gave us, usually within 1–2 business days.</p>
     </div>
 
+  </div>
+</div>
+
+<!-- ================= TRACK ORDER MODAL ================= -->
+<!-- Front-end-only demo: this doesn't look up a real order (no backend exists to
+     check). It collects the order number + email and shows an honest message —
+     wire the form's submit handler in script.js to your real order/shipping
+     platform (Shopify, Shiprocket, your own backend, etc.) to show live status. -->
+<div class="scrim" id="trackScrim"></div>
+<div class="modal" id="trackModal" role="dialog" aria-modal="true" aria-labelledby="trackTitle">
+  <div class="modal-head">
+    <h3 id="trackTitle">Track Your Order</h3>
+    <button class="icon-btn" id="trackClose" aria-label="Close">✕</button>
+  </div>
+  <div class="modal-body">
+
+    <div id="trackFormWrap">
+      <p class="modal-note">Enter your order number and the email you used at checkout, and we'll look into it for you.</p>
+
+      <form id="trackForm" novalidate>
+        <div class="form-field">
+          <label for="trackOrderId">Order number</label>
+          <input type="text" id="trackOrderId" placeholder="e.g. YC10234" required>
+        </div>
+        <div class="form-field">
+          <label for="trackEmail">Email used at checkout</label>
+          <input type="email" id="trackEmail" placeholder="you@email.com" required>
+        </div>
+
+        <p class="form-error" id="trackError"></p>
+
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Check status</button>
+      </form>
+    </div>
+
+    <div id="trackThanks" class="returns-thanks" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>
+      <h4>Got it — we'll email you the update</h4>
+      <p>Live order tracking isn't connected yet, so we've noted your order number and will send its current status to your email shortly.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= FAQ MODAL ================= -->
+<!-- REPLACE the questions/answers below with your own. Each .faq-item toggles
+     independently when its question is clicked — no JS changes needed to add
+     or remove one, just copy/paste a .faq-item block. -->
+<div class="scrim" id="faqScrim"></div>
+<div class="modal" id="faqModal" role="dialog" aria-modal="true" aria-labelledby="faqTitle">
+  <div class="modal-head">
+    <h3 id="faqTitle">Frequently Asked Questions</h3>
+    <button class="icon-btn" id="faqClose" aria-label="Close">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button type="button" class="faq-question">
+          How long does delivery take?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer"><p>Orders typically arrive within 5–7 business days across India. You'll get a shipping confirmation email once your order is dispatched.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button type="button" class="faq-question">
+          What's your return policy?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer"><p>You can request a return within 3 days of delivery. Items must be unworn, unwashed, and in their original packaging.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button type="button" class="faq-question">
+          Do you offer Cash on Delivery?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer"><p>REPLACE with your actual Cash on Delivery policy.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button type="button" class="faq-question">
+          How do I know my size?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer"><p>Check the <a href="#" id="faqSizeGuideLink">Size Guide</a> for detailed measurements before you order.</p></div>
+      </div>
+
+      <div class="faq-item">
+        <button type="button" class="faq-question">
+          Can I change or cancel my order?
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-answer"><p>REPLACE with your actual order-change/cancellation policy — e.g. contact us within X hours of ordering.</p></div>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -479,8 +576,8 @@
         <ul>
           <li><a href="#" id="sizeGuideOpen">Size guide</a></li>
           <li><a href="#" id="returnsOpen">Shipping &amp; returns</a></li>
-          <li><a href="#">Track an order</a></li>
-          <li><a href="#">FAQs</a></li>
+          <li><a href="#" id="trackOpen">Track an order</a></li>
+          <li><a href="#" id="faqOpen">FAQs</a></li>
         </ul>
       </div>
 

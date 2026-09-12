@@ -360,26 +360,6 @@ nav.primary-nav a:hover::after{ transform: scaleX(1); transform-origin: left; }
 .value-item h3{ font-size:18px; margin-bottom:8px; }
 .value-item p{ color: var(--muted); font-size:14.5px; max-width: 34ch; }
 
-/* /* =====================================================================
-   GALLERY STRI[
-===================================================================== 
-.gallery-strip{
-  display:grid; grid-template-columns: repeat(5,1fr); gap:14px;
-}
-.gallery-strip a{ position:relative; aspect-ratio: 1/1; overflow:hidden; border-radius:3px; }
-.gallery-strip img{ width:100%; height:100%; object-fit:cover; transition: transform .5s ease; }
-.gallery-strip a:hover img{ transform: scale(1.08); }
-.gallery-strip a::after{
-  content: attr(data-tag); position:absolute; left:10px; bottom:10px; color:#fff;
-  font-size:12px; font-weight:600; opacity:0; transition:opacity .2s ease;
-}
-.gallery-strip a:hover::after{ opacity:1; }
-.gallery-strip a::before{
-  content:""; position:absolute; inset:0; background: rgba(24,20,15,.25);
-  opacity:0; transition:opacity .2s ease;
-}
-.gallery-strip a:hover::before{ opacity:1; } */
-
 /* =====================================================================
    NEWSLETTER
 ===================================================================== */
@@ -474,11 +454,9 @@ footer{ border-top:1px solid var(--line); padding-block: 56px 28px; }
   opacity:0; pointer-events:none; transition: opacity .3s ease;
 }
 .scrim.is-visible{ opacity:1; pointer-events:auto; }
+
 /* =====================================================================
    SEARCH OVERLAY
-   Paste this whole block onto the END of your existing style.css.
-   It relies on --ivory, --clay, --font-display, --font-body and
-   .icon-btn / .wrap already being defined earlier in that file.
 ===================================================================== */
 .search-overlay{
   position: fixed; inset: 0; z-index: 95;
@@ -524,71 +502,57 @@ footer{ border-top:1px solid var(--line); padding-block: 56px 28px; }
 .search-result .sr-price{ font-weight:600; color: var(--clay); font-size:14px; white-space:nowrap; }
 .search-no-results{ font-size: 14px; color: rgba(244,239,228,.6); padding: 12px 8px; }
 
-
-
-
-
-
-
-
-/* Page-specific layout — only used on this page, so it's kept here
-     instead of in style.css. Relies on --ink, --ivory, --paper, --line,
-     --muted, --clay, --font-body, --font-display and .btn / .btn-primary
-     already being defined in style.css. */
+/* =====================================================================
+   AUTH PAGE (login.html)
+===================================================================== */
 .auth-page{
-    min-height: 100vh;
-    display:flex; align-items:center; justify-content:center;
-    padding: var(--gutter, 24px);
-    background: var(--ivory);
-  }
-  .auth-card{
-    width: 100%; max-width: 420px;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: clamp(28px, 5vw, 44px);
-  }
-  .auth-brand{ text-align:center; margin-bottom: 30px; }
-  .auth-brand .brand-mark{ font-size: 24px; }
-  .auth-tabs{
-    display:flex; border: 1px solid var(--line); border-radius: 3px;
-    overflow:hidden; margin-bottom: 28px;
-  }
-  .auth-tabs button{
-    flex:1; padding: 12px; font-size: 14px; font-weight:600;
-    background: transparent; border:none; color: var(--muted);
-    transition: background .2s ease, color .2s ease;
-  }
-  .auth-tabs button.is-active{ background: var(--ink); color: var(--ivory); }
-  .auth-form{ display:none; flex-direction:column; gap: 16px; }
-  .auth-form.is-active{ display:flex; }
-  .auth-field{ display:flex; flex-direction:column; gap: 6px; }
-  .auth-field label{ font-size: 13px; font-weight:600; }
-  .auth-field input{
-    padding: 12px 14px; border: 1px solid var(--line); border-radius: 2px;
-    font-family: var(--font-body); font-size: 14.5px; background: var(--ivory);
-  }
-  .auth-field input:focus{ outline: none; border-color: var(--ink); }
-  .auth-error{ font-size: 12.5px; color: var(--clay); min-height: 16px; }
-  .auth-submit{ margin-top: 4px; justify-content:center; }
-  .auth-foot{
-    text-align:center; margin-top: 22px; font-size: 13.5px; color: var(--muted);
-  }
-  .auth-foot a{ font-weight:600; color: var(--ink); border-bottom: 1px solid var(--ink); }
-  .auth-back{
-    display:inline-flex; align-items:center; gap:8px;
-    font-size: 13.5px; margin-bottom: 22px; color: var(--muted);
-  }
-  .auth-back:hover{ color: var(--ink); }
+  min-height: 100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding: var(--gutter, 24px);
+  background: var(--ivory);
+}
+.auth-card{
+  width: 100%; max-width: 420px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: clamp(28px, 5vw, 44px);
+}
+.auth-brand{ text-align:center; margin-bottom: 30px; }
+.auth-brand .brand-mark{ font-size: 24px; }
+.auth-tabs{
+  display:flex; border: 1px solid var(--line); border-radius: 3px;
+  overflow:hidden; margin-bottom: 28px;
+}
+.auth-tabs button{
+  flex:1; padding: 12px; font-size: 14px; font-weight:600;
+  background: transparent; border:none; color: var(--muted);
+  transition: background .2s ease, color .2s ease;
+}
+.auth-tabs button.is-active{ background: var(--ink); color: var(--ivory); }
+.auth-form{ display:none; flex-direction:column; gap: 16px; }
+.auth-form.is-active{ display:flex; }
+.auth-field{ display:flex; flex-direction:column; gap: 6px; }
+.auth-field label{ font-size: 13px; font-weight:600; }
+.auth-field input{
+  padding: 12px 14px; border: 1px solid var(--line); border-radius: 2px;
+  font-family: var(--font-body); font-size: 14.5px; background: var(--ivory);
+}
+.auth-field input:focus{ outline: none; border-color: var(--ink); }
+.auth-error{ font-size: 12.5px; color: var(--clay); min-height: 16px; }
+.auth-submit{ margin-top: 4px; justify-content:center; }
+.auth-foot{
+  text-align:center; margin-top: 22px; font-size: 13.5px; color: var(--muted);
+}
+.auth-foot a{ font-weight:600; color: var(--ink); border-bottom: 1px solid var(--ink); }
+.auth-back{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size: 13.5px; margin-bottom: 22px; color: var(--muted);
+}
+.auth-back:hover{ color: var(--ink); }
 
-
-  /* =====================================================================
+/* =====================================================================
    CART DRAWER
-   Paste this whole block onto the END of your existing style.css,
-   after the search-overlay block you added earlier.
-   Relies on --ink, --ivory, --paper, --line, --muted, --clay,
-   --font-display, --font-body, .icon-btn, .btn, .btn-primary and
-   .scrim (used by your mobile menu) already being defined.
 ===================================================================== */
 .cart-drawer{
   position: fixed; inset: 0 0 0 auto; width: min(420px, 92vw);
@@ -657,19 +621,8 @@ footer{ border-top:1px solid var(--line); padding-block: 56px 28px; }
 
 .icon-btn.bag-btn{ position: relative; }
 
-@media (max-width: 480px){
-  .cart-drawer{ width: 100vw; }
-}
-
-
-
-
 /* =====================================================================
    CATEGORY PAGE (category.html)
-   Paste this whole block onto the END of your existing style.css,
-   after the search-overlay and cart-drawer blocks you added earlier.
-   Relies on --ink, --ivory, --muted, --line, --clay, --font-display
-   already being defined.
 ===================================================================== */
 .category-page-head{ padding-bottom: 32px; }
 .breadcrumb{
@@ -705,21 +658,8 @@ footer{ border-top:1px solid var(--line); padding-block: 56px 28px; }
   margin-bottom: 12px;
 }
 
-@media (max-width: 640px){
-  .category-tabs{ gap: 8px; }
-  .category-t
-  ab{ padding: 9px 14px; font-size: 13px; }
-}
-
-
-
 /* =====================================================================
    SIZE GUIDE MODAL
-   Paste this whole block onto the END of your existing style.css,
-   after everything else you've already added.
-   Relies on --ink, --ivory, --paper, --line, --muted, --clay,
-   --font-display, --font-body, .icon-btn and .scrim already being
-   defined.
 ===================================================================== */
 .modal{
   position: fixed; z-index: 97;
@@ -764,7 +704,7 @@ footer{ border-top:1px solid var(--line); padding-block: 56px 28px; }
 }
 
 /* =====================================================================
-   RETURNS / CONTACT FORM (inside .modal)
+   RETURNS / TRACK ORDER — SHARED FORM STYLES (inside .modal)
 ===================================================================== */
 .form-field{ margin-bottom: 18px; }
 .form-field label{
@@ -773,12 +713,14 @@ footer{ border-top:1px solid var(--line); padding-block: 56px 28px; }
 .form-field .field-hint{ font-weight:400; color: var(--muted); font-size:12.5px; }
 
 .form-field input[type="email"],
+.form-field input[type="text"],
 .form-field textarea{
   width:100%; padding: 12px 14px; border:1px solid var(--line); border-radius:2px;
   font-family: var(--font-body); font-size:14.5px; background: var(--ivory); color: var(--ink);
   resize: vertical;
 }
 .form-field input[type="email"]:focus,
+.form-field input[type="text"]:focus,
 .form-field textarea:focus{ outline:none; border-color: var(--ink); }
 
 .checkbox-group{ display:flex; flex-direction:column; gap:10px; }
@@ -794,8 +736,33 @@ footer{ border-top:1px solid var(--line); padding-block: 56px 28px; }
   font-size:12.5px; color: var(--clay); min-height:16px; margin-bottom:14px;
 }
 
+/* Shared "thank you" confirmation panel — used by returns and track-order modals */
 .returns-thanks{ text-align:center; padding: 20px 10px 10px; }
 .returns-thanks svg{ width:46px; height:46px; color: var(--olive); margin-bottom:16px; }
 .returns-thanks h4{ font-size:19px; margin-bottom:10px; }
 .returns-thanks p{ color: var(--muted); font-size:14.5px; max-width:36ch; margin-inline:auto; }
 
+/* =====================================================================
+   FAQ MODAL — accordion
+===================================================================== */
+.faq-list{ display:flex; flex-direction:column; }
+.faq-item{ border-bottom: 1px solid var(--line); }
+.faq-item:first-child{ border-top: 1px solid var(--line); }
+
+.faq-question{
+  width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px;
+  background:none; border:none; text-align:left;
+  padding: 16px 4px; font-size:14.5px; font-weight:600; color: var(--ink);
+}
+.faq-question svg{
+  width:16px; height:16px; flex-shrink:0; color: var(--muted);
+  transition: transform .2s ease;
+}
+.faq-item.is-open .faq-question svg{ transform: rotate(180deg); }
+
+.faq-answer{ display:none; padding: 0 4px 18px; }
+.faq-item.is-open .faq-answer{ display:block; }
+.faq-answer p{ color: var(--muted); font-size:14px; line-height:1.6; }
+.faq-answer a{ color: var(--ink); text-decoration:underline; text-underline-offset:2px; font-weight:600; }
+
+ 

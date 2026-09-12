@@ -41,3 +41,50 @@
   .modal-body{ padding: 18px 16px 24px; }
   .size-table th, .size-table td{ padding: 8px 10px; }
 }
+
+
+
+  /* Everything below replaces the old separate responsive.css — one file,
+   nothing hidden. Breakpoints: 1024px (tablet), 860px (mobile nav
+   switches on), 640px (small phones), 480px (drawers/modal go full
+   width), 420px (smallest phones). */
+/* ===================================================================== */
+@media (max-width: 1024px){
+  .category-rail{ grid-template-columns: repeat(2,1fr); }
+  .product-grid{ grid-template-columns: repeat(2,1fr); }
+  .footer-grid{ grid-template-columns: 1fr 1fr; }
+  .values{ grid-template-columns: 1fr; gap:28px; }
+}
+
+@media (max-width: 860px){
+  nav.primary-nav{ display:none; }
+  .menu-toggle{ display:block; }
+  .header-actions{ gap:12px; }
+  .hero-grid{ grid-template-columns: 1fr; }
+  .hero-media{ order:-1; }
+  .hero-media .frame-2{ display:none; }
+  .hero-tag{ display:none; }
+  .lookbook{ min-height: 52vh; }
+  .newsletter{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px){
+  .category-rail{ grid-template-columns: repeat(2,1fr); gap:10px; }
+  .product-grid{ grid-template-columns: repeat(2,1fr); gap: 20px 12px; }
+  .footer-grid{ grid-template-columns: 1fr 1fr; gap: 26px 16px; }
+  .hero-stats{ gap: 20px; }
+  .section{ padding-block: 48px; }
+  .category-tabs{ gap: 8px; }
+  .category-tab{ padding: 9px 14px; font-size: 13px; }
+}
+
+@media (max-width: 480px){
+  .cart-drawer{ width: 100vw; }
+  .modal{ width: 94vw; max-height: 90vh; }
+  .modal-body{ padding: 18px 16px 24px; }
+  .size-table th, .size-table td{ padding: 8px 10px; }
+}
+
+@media (max-width: 420px){
+  .category-rail{ grid-template-columns: 1fr 1fr; }
+}
